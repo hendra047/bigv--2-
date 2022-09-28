@@ -25,7 +25,7 @@ Cart - Big V
                             </div>
                             <div class="div-line"></div>
                             @foreach ($cart->products as $product)
-                                <div class="vendor-item">
+                                <div class="vendor-item" vendor-id="{{ $cart->id }}">
                                     <div class="flex gap-medium">
                                         <input type="checkbox" class="product-cart" value="{{ $product->cart_id }}">
                                         <img src="{{ $product->featured_image }}" loading="lazy" alt="" class="image-18" />
@@ -104,6 +104,43 @@ Cart - Big V
 <script>
     var totalCheckout = {};
 
+    function updateCheckout() {
+        $(".container-summary-item").html(`
+            <div class="summary-item div-block-24">
+                <div class="inline">-</div>
+            </div>
+        `);
+        
+        var grandTotalPrice = 0;
+        for (var key in totalCheckout) {
+            if (!totalCheckout.hasOwnProperty(key)) continue;
+            
+            var totalPrice = 0;
+            var totalItem = 0;
+            var vendor = totalCheckout[key];
+            for (var item in vendor) {
+                if (!vendor.hasOwnProperty(item)) continue;
+
+                if (!isNaN(parseInt(item))) {
+                    totalPrice += vendor[item].price;
+                    totalItem += vendor[item].quantity;
+                }
+            }
+            
+            $(".container-summary-item").append(`
+                <div id="summary-item-` + key + `" class="summary-item div-block-24">
+                    <div class="inline">` + vendor["vendor_name"] + ` (` + totalItem + ` items)</div>
+                    <div class="inline">$` + totalPrice + `</div>
+                </div>
+            `);
+
+            grandTotalPrice += totalPrice;
+        }
+        $("#grand-total-price").html(grandTotalPrice);
+    }
+</script>
+<script>
+
     $(document).on("click", ".quantity-change", function(){
         var qty = $(this).parent().find(".product-quantity");
         if ($(this).attr("logic") == "add"){
@@ -115,9 +152,11 @@ Cart - Big V
     });
 
     $(document).on("change", ".product-cart", function() {
+        var parent = $(this).parents(".vendor-item");
+        var vendorId = parent.attr("vendor-id");
+        var cartId = $(this).val();
+
         if (this.checked) {
-            var parent = $(this).parents(".vendor-item");
-            var cartId = $(this).val();
             var quantity = $(this).parents().next().find(".product-quantity").val();
 
             $.post(url + ":8000/user/cart/" + cartId, {
@@ -130,7 +169,7 @@ Cart - Big V
                         parent.remove();
                     }
                 }
-                
+
                 if (data.vendor_id in totalCheckout) {
                     totalCheckout[data.vendor_id][cartId] = {price: (data.price * data.quantity), quantity: data.quantity};
                 } else {
@@ -139,60 +178,44 @@ Cart - Big V
                 }
                 totalCheckout[data.vendor_id]["vendor_name"] = data.vendor_name;
                 
-                $(".container-summary-item").html(`
-                    <div class="summary-item div-block-24">
-                        <div class="inline">-</div>
-                    </div>
-                `);
-                
-                var grandTotalPrice = 0;
-                for (var key in totalCheckout) {
-                    if (!totalCheckout.hasOwnProperty(key)) continue;
-                    
-                    var totalPrice = 0;
-                    var totalItem = 0;
-                    var vendor = totalCheckout[key];
-                    for (var item in vendor) {
-                        if (!vendor.hasOwnProperty(item)) continue;
-
-                        if (!isNaN(parseInt(item))) {
-                            totalPrice += vendor[item].price;
-                            totalItem += vendor[item].quantity;
-                        }
-                    }
-                    
-                    $(".container-summary-item").append(`
-                        <div id="summary-item-` + key + `" class="summary-item div-block-24">
-                            <div class="inline">` + vendor["vendor_name"] + ` (` + totalItem + ` items)</div>
-                            <div class="inline">$` + totalPrice + `</div>
-                        </div>
-                    `);
-
-                    grandTotalPrice += totalPrice;
-                }
-                $("#grand-total-price").html(grandTotalPrice);
-
-                console.log(data);
+                updateCheckout();
             }).fail(function(error) {
                 console.log(error);
             });
         } else {
-            //update data pollia jika ke uncheck
-            // update grand total price
-            console.log(this.value);
+            delete totalCheckout[vendorId][cartId];
+            if (Object.keys(totalCheckout[vendorId]).length <= 1) {
+                delete totalCheckout[vendorId];
+            }
+            updateCheckout();
         }
     });
 
     $(document).on("click", ".btn-delete-product", function() {
         var parent = $(this).parents(".vendor-item");
-        var cartId = $(this).parents().prev().find(".product-cart").val();
-        
+        var checkbox = $(this).parent().prev().find(".product-cart");
+        var vendorId = parent.attr("vendor-id");
+        var cartId = checkbox.val();
+
         if (confirm('Are you sure you want to delete this item?')) {
             $.post(url + ":8000/user/cart/" + cartId, {
                 _token: CSRF_TOKEN,
                 _method: "DELETE",
             }).done(function(data) {
-                alert(data);
+                var obj = JSON.parse(data);
+
+                alert(obj.message);
+                if (checkbox.is(":checked")) {
+                    if (Object.keys(totalCheckout).length <= 1) {
+                        delete totalCheckout[obj.vendor_id];
+                    } else {
+                        delete totalCheckout[obj.vendor_id][obj.cart_id];
+                        if (Object.keys(totalCheckout[obj.vendor_id]).length <= 1) {
+                            delete totalCheckout[obj.vendor_id];
+                        }
+                    }
+                    updateCheckout();
+                }
                 parent.remove();
             }).fail(function(error) {
                 console.log(error);

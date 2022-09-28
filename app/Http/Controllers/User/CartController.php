@@ -150,12 +150,20 @@ class CartController extends Controller
      */
     public function destroy(Cart $cart)
     {
+        $cart->product_variation->product->vendor;
+
         try {
             $cart->delete();
         } catch (\Illuminate\Database\QueryException $exception) {
             $errorInfo = $exception->errorInfo;
         }
 
-        return isset($errorInfo) ? "Error when delete this product. Please try again or contact our developer." : "Successfully delete this product";
+        return json_encode(isset($errorInfo) ? [
+            'message' => "Error when delete this product. Please try again or contact our developer."
+        ] : [
+            'message' => "Successfully delete this product",
+            'vendor_id' => $cart->product_variation->product->vendor->id,
+            'cart_id' => $cart->id
+        ]);
     }
 }
