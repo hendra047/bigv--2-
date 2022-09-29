@@ -56,18 +56,13 @@ Cart - Big V
                     <h4>Summary</h4>
                     <div class="container-summary-item">
                         <div class="summary-item div-block-24">
-                            <div class="inline">Pollia (28 items)</div>
-                            <div class="inline">$201</div>
-                        </div>
-                        <div class="summary-item div-block-24">
-                            <div class="inline">Kue Manis (2 items)</div>
-                            <div class="inline">$201</div>
+                            <div class="inline">-</div>
                         </div>
                     </div>
                     <div class="div-line"></div>
                     <div class="div-block-24">
                         <div class="inline text-weight-bold">Total</div>
-                        <div class="inline text-weight-bold">$<span id="grand-total-price">201</span></div>
+                        <div class="inline text-weight-bold">$<span id="grand-total-price">0</span></div>
                     </div><a href="#" class="checkout-button oh-grow w-button">Proceed to Checkout</a></div>
             </div>
         </div><img src="{{asset('assets/6303b67a5064f05035c5a701_shape 1.svg')}}" loading="lazy" alt="" class="absolute shape-cart" />
@@ -104,43 +99,57 @@ Cart - Big V
 <script>
     var totalCheckout = {};
 
-    function updateCheckout() {
-        $(".container-summary-item").html(`
-            <div class="summary-item div-block-24">
-                <div class="inline">-</div>
-            </div>
-        `);
-        
-        var grandTotalPrice = 0;
-        for (var key in totalCheckout) {
-            if (!totalCheckout.hasOwnProperty(key)) continue;
-            
-            var totalPrice = 0;
-            var totalItem = 0;
-            var vendor = totalCheckout[key];
-            for (var item in vendor) {
-                if (!vendor.hasOwnProperty(item)) continue;
+    function roundUp(num, precision) {
+        precision = Math.pow(10, precision);
+        return Math.ceil(num * precision) / precision;
+    }
 
-                if (!isNaN(parseInt(item))) {
-                    totalPrice += vendor[item].price;
-                    totalItem += vendor[item].quantity;
+    function updateCheckout() {       
+        var grandTotalPrice = 0;
+        if (Object.keys(totalCheckout).length > 0) {
+            $(".container-summary-item").html("");
+            for (var key in totalCheckout) {
+                if (!totalCheckout.hasOwnProperty(key)) continue;
+                
+                var totalPrice = 0;
+                var totalItem = 0;
+                var vendor = totalCheckout[key];
+                for (var item in vendor) {
+                    if (!vendor.hasOwnProperty(item)) continue;
+    
+                    if (!isNaN(parseInt(item))) {
+                        totalPrice += vendor[item].price;
+                        totalItem += vendor[item].quantity;
+                    }
                 }
+    
+                $(".container-summary-item").append(`
+                    <div id="summary-item-` + key + `" class="summary-item div-block-24">
+                        <div class="inline">` + vendor["vendor_name"] + ` (` + totalItem + ` items)</div>
+                        <div class="inline">$` + totalPrice.toFixed(2) + `</div>
+                    </div>
+                `);
+    
+                grandTotalPrice += totalPrice;
             }
-            
-            $(".container-summary-item").append(`
-                <div id="summary-item-` + key + `" class="summary-item div-block-24">
-                    <div class="inline">` + vendor["vendor_name"] + ` (` + totalItem + ` items)</div>
-                    <div class="inline">$` + totalPrice + `</div>
+        } else {
+            $(".container-summary-item").html(`
+                <div class="summary-item div-block-24">
+                    <div class="inline">-</div>
                 </div>
             `);
-
-            grandTotalPrice += totalPrice;
         }
-        $("#grand-total-price").html(grandTotalPrice);
+        $("#grand-total-price").html(grandTotalPrice.toFixed(2));
     }
 </script>
 <script>
-
+    $(document).ready(function() {
+        $("input[type=checkbox]").each(function() {
+            if ($(this).is(":checked")) {
+                $(this).prop("checked", false);
+            }
+        });
+    });
     $(document).on("click", ".quantity-change", function(){
         var qty = $(this).parent().find(".product-quantity");
         if ($(this).attr("logic") == "add"){
@@ -171,10 +180,10 @@ Cart - Big V
                 }
 
                 if (data.vendor_id in totalCheckout) {
-                    totalCheckout[data.vendor_id][cartId] = {price: (data.price * data.quantity), quantity: data.quantity};
+                    totalCheckout[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
                 } else {
                     totalCheckout[data.vendor_id] = {};
-                    totalCheckout[data.vendor_id][cartId] = {price: (data.price * data.quantity), quantity: data.quantity};
+                    totalCheckout[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
                 }
                 totalCheckout[data.vendor_id]["vendor_name"] = data.vendor_name;
                 
@@ -204,7 +213,6 @@ Cart - Big V
             }).done(function(data) {
                 var obj = JSON.parse(data);
 
-                alert(obj.message);
                 if (checkbox.is(":checked")) {
                     if (Object.keys(totalCheckout).length <= 1) {
                         delete totalCheckout[obj.vendor_id];
@@ -217,6 +225,8 @@ Cart - Big V
                     updateCheckout();
                 }
                 parent.remove();
+                
+                alert(obj.message);
             }).fail(function(error) {
                 console.log(error);
             });

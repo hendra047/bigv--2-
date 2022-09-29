@@ -61,14 +61,21 @@ class CartController extends Controller
             ]);
 
             $productVariation = ProductVariation::where('id', $request->product_variation_id)->first();
+            $cart = Cart::whereNull('transaction_id')->where('product_variation_id', $request->product_variation_id)->first();
 
-            $data = $request->all();
-            $data += [
-                'price' => $productVariation->price,
-                'user_id' => auth()->user()->id,
-            ];
-
-            $cart = Cart::create($data);
+            if ($cart == null) {
+                $data = $request->all();
+                $data += [
+                    'price' => $productVariation->price,
+                    'user_id' => auth()->user()->id,
+                ];
+                $cart = Cart::create($data);
+            } else {
+                $qty = $cart->quantity + $request->quantity;
+                $cart->update([
+                    'quantity' => $qty
+                ]);
+            }
         } catch (\Illuminate\Database\QueryException $exception) {
             $errorInfo = $exception->errorInfo;
         }

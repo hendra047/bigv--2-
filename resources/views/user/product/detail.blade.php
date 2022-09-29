@@ -49,8 +49,8 @@ Product Name - Big V
                     <h5 class="heading-4 inline text-weight-normal padding-right padding-xsmall text-color-grey">Food and Beverage</h5>
                     <h5 class="heading-4 inline text-weight-normal padding-right padding-xsmall text-color-grey"> &gt; </h5>
                     <h5 class="heading-4 inline text-weight-normal padding-right padding-xsmall text-color-grey">Chinese New Year</h5>
-                    <h2 class="product-variation heading-2 text-color-grey margin-vertical margin-xsmall" variation-id="{{ $product->variations[0]->id }}">{{ count($product->variations) > 0 ? ($product->variations[0]->name == "novariation" ? $product->variations[0]->name : $product->name) : $product->name }}</h2>
-                    <div class="flex" style="justify-content: space-between;">
+                    <h2 class="product-variation heading-2 text-color-grey margin-vertical margin-xsmall" variation-id="{{ $product->variations[0]->id }}">{{ count($product->variations) > 0 ? ($product->variations[0]->name == "novariation" ? $product->name : $product->variations[0]->name) : $product->name }}</h2>
+                    <div class="flex" style="justify-content: space-between; gap: 10px;">
                         <div class="c-product-rating">
                             <div class="flex">
                                 <div class="c-product-rating__star">
@@ -121,7 +121,7 @@ Product Name - Big V
                     </div>
 
                     @if ($product->variations[0]->name == "novariation") <!-- NO VARIATIONS -->
-                        <h3 class="product-price heading-3 margin-vertical margin-xsmall" price="{{ $product->variations[0]->price }}">${{ $product->variations[0]->price }}</h3>
+                        <h3 class="product-price heading-3 margin-vertical margin-xsmall" price="{{ $product->variations[0]->price }}" variation-id="{{ $product->variations[0]->id }}">${{ $product->variations[0]->price }}</h3>
                         <div class="div-line"></div>
                     @else <!-- VARIATIONS -->
                         <h3 class="product-price heading-3 margin-vertical margin-xsmall" min-price="{{ $minProductPrice }}" max-price="{{ $maxProductPrice }}">${{ $minProductPrice }} - ${{ $maxProductPrice }}</h3>
@@ -135,21 +135,21 @@ Product Name - Big V
                     @endif
 
                     <!-- ADDONS -->
+                    @if(count($addons) > 0)
                     <div class="row">
-                        @if(count($addons) > 0)
-                            @foreach($addons as $addon)
-                                <div class="col-6 input-group mb-2">
-                                    <h5 class="heading-4 mb-2">{{ $addon->name }}</h5>
-                                    <select class="addons-option w-100 custom-select" name="" id="" @if($addon->required) required @endif>
-                                        @foreach($addon->addons_options as $addons_option)
-                                            <option price="{{ $addons_option->price }}" value="{{ $addons_option->id }}">{{ $addons_option->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            @endforeach
-                        @endif
+                        @foreach($addons as $addon)
+                            <div class="col-6 input-group mb-2">
+                                <h5 class="heading-4 mb-2">{{ $addon->name }}</h5>
+                                <select class="addons-option w-100 custom-select" name="" id="" @if($addon->required) required @endif>
+                                    @foreach($addon->addons_options as $addons_option)
+                                        <option price="{{ $addons_option->price }}" value="{{ $addons_option->id }}">{{ $addons_option->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endforeach
                     </div>
                     <div class="div-line"></div>
+                    @endif
                 </div>
                 <div data-w-id="e5486bd2-858d-5f10-525d-cc969625544d" class="product-info flex actionSectionProductDetail">
                     <div class="quantity-pill">
@@ -157,12 +157,19 @@ Product Name - Big V
                         <input type="number" class="product-quantity" value="1" min="1">
                         <div class="cursor-pointer quantity-change" id="addQuantity">+</div>
                     </div>
-                    <div class="upper-product-buttons"><a href="#" class="btn-add-cart btn-secondary atc-product-page oh-grow w-button">Add to Cart</a><a href="#" class="btn-buy-now btn-outline-secondary text-secondary button-secondary oh-grow w-button">Buy Now</a></div>
+                    <div class="upper-product-buttons">
+                        @if ($product->variations[0]->name == "novariation")
+                            <a href="#" class="btn-add-cart atc-product-page oh-grow w-button">Add to Cart</a><a href="#" class="btn-buy-now button-secondary oh-grow w-button">Buy Now</a>
+                        @else
+                            <a href="#" class="btn-add-cart btn-secondary atc-product-page oh-grow w-button">Add to Cart</a><a href="#" class="btn-buy-now btn-outline-secondary text-secondary button-secondary oh-grow w-button">Buy Now</a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- VENDOR -->
 <div class="product-vendor-n-info ea-up">
     <div class="div-block-8">
         <div class="vendor-product-detail" >
@@ -226,6 +233,7 @@ Product Name - Big V
         </div>
     </div>
 </div>
+<!-- END VENDOR -->
 <div class="flex relative max-width-full align-center"><img src="{{asset('assets/6303b7b9afc8585f7943565c_shape 2.svg')}}" loading="lazy" alt="" class="absolute bottom-left ea-left" />
     <div class="flex top-align max-width relative">
         <div class="card27 padding-small margin-small sticky-top ea-left" id="reviewSummary">
@@ -435,16 +443,27 @@ Product Name - Big V
         @if (auth()->user()->role_id == 1)
             document.querySelector(".btn-add-cart").addEventListener("click", function(event) {
                 event.preventDefault();
-                if ($(".product-variation.selected").length > 0) {
-                    var hostname = "{{ request()->getHost() }}";
-                    var url = "{{ config('app.url') }}";
-                    if (hostname.includes('www')) {
-                        url = "https://" + hostname
-                    }
 
+                var hostname = "{{ request()->getHost() }}";
+                var url = "{{ config('app.url') }}";
+                if (hostname.includes('www')) {
+                    url = "https://" + hostname
+                }
+
+                if ($(".product-variation.selected").length > 0) {
                     $.post(url + ":8000/user/cart", {
                         _token: CSRF_TOKEN,
                         product_variation_id: $(".product-variation.selected").attr("variation-id"),
+                        quantity: $(".product-quantity").val()
+                    }).done(function(data) {
+                        alert(data);
+                    }).fail(function(error) {
+                        console.log(error);
+                    });
+                } else {
+                    $.post(url + ":8000/user/cart", {
+                        _token: CSRF_TOKEN,
+                        product_variation_id: $(".product-price").attr("variation-id"),
                         quantity: $(".product-quantity").val()
                     }).done(function(data) {
                         alert(data);
