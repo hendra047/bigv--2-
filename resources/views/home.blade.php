@@ -64,7 +64,9 @@ Product Name - Big V
                                     @endforeach
                                     <label class="w-checkbox">
                                         <div class="w-checkbox-input w-checkbox-input--inputType-custom checkbox"></div>
-                                        <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" style="opacity:0;position:absolute;z-index:-1" /><span class="text-size-small w-form-label" for="checkbox-2">Others</span></label>
+                                        <input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" style="opacity:0;position:absolute;z-index:-1" />
+                                        <span class="text-size-small w-form-label" for="checkbox-2">Others</span>
+                                    </label>
                                         <label for="email">Price</label>
                                         <div class="flex justify-left" style="gap: 5px;">
                                             <input type="number" class="quantity-pill-small price-range-filter">

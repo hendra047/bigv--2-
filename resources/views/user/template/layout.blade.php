@@ -70,7 +70,7 @@
 					<div class="w-form-done"></div>
 					<div class="w-form-fail"></div>
 				</div><a href="#" class="text-color-grey w-nav-link">Home</a>
-				<div class="div-line-orange"></div><a href="#" class="text-color-grey w-nav-link">Products</a>
+				<div class="div-line-orange"></div><a href="{{ route('home') }}" class="text-color-grey w-nav-link">Products</a>
 				<div class="div-line-orange"></div><a href="#" class="text-color-grey w-nav-link">Shop</a>
 				<div class="div-line-orange"></div><a href="#" class="text-color-grey w-nav-link">About</a>
 				@auth

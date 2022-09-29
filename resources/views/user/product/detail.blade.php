@@ -173,10 +173,10 @@ Product Name - Big V
 <div class="product-vendor-n-info ea-up">
     <div class="div-block-8">
         <div class="vendor-product-detail" >
-            <img src="https://bigvsg.com/wp-content/uploads/2021/12/Mont-Delizioso-300x276.png" loading="lazy" alt="" class="image-10" />
+            <img src="{{ $product->vendor->photo }}" loading="lazy" alt="" class="image-10" />
             <div class="vendor-detail-product-detail">
-                <h4 class="text-color-dark-grey">Vendor Name</h4>
-                <div class="text-color-grey" style="font-size: 0.8rem;">Location: <b>East</b></div>
+                <h4 class="text-color-dark-grey">{{ $product->vendor->name }}</h4>
+                <div class="text-color-grey" style="font-size: 0.8rem;">Location: <b>{{ $product->vendor->location->name }}</b></div>
                 <div class="c-product-rating">
                     <div class="flex">
                         <div class="c-product-rating__star">
@@ -205,7 +205,7 @@ Product Name - Big V
                             </div>
                         </div>
                     </div>
-                    <h5 class="heading-4 p-beside-star">4.9 (300 rating)</h5>
+                    <h5 class="heading-4 p-beside-star">{{ $product->vendor->rating }} (300 rating)</h5>
                     <h5 class="heading-4 p-beside-star">1.000 sold</h5>
                 </div>
             </div>
@@ -216,8 +216,8 @@ Product Name - Big V
     </div>
     <div class="div-line"></div>
     <h4 class="text-color-grey mb-2">Product Description</h4>
-    <p class="paragraph-2 text-color-grey mb-3" style="max-width: 500px;">Farewell to the year of Ox, and the Year of Tiger on the way! Over here we launch our cute “Cute Tiger Aroma Stone Set” to welcome the New Year.The stone set is decorated with the festive red dried flowers paired with a blessed essential oil blend and a cute tiger aroma stone! It signifies peace, prosperity, good health, good luck, good dreams, happiness, wealth and all the good things come to you in the “Tiger year”</p>
-    <div class="div-block-9">
+    <p class="paragraph-2 text-color-grey mb-3" style="max-width: 500px;">{{ $product->description }}</p>
+    {{-- <div class="div-block-9">
         <div id="w-node-_274f20e5-cf76-d21b-b2d2-1fb0375edc27-fac73a6b">
             <h4 class="text-color-grey mb-2">Additional Information</h4>
             <div class="paragraph-2 text-color-grey">Information: Cute Tiger Aroma Stone Set come with special essential oil blend 2ml
@@ -231,7 +231,7 @@ Product Name - Big V
                 <br/>Delivery time from 11am – 9pm
                 <br/>No deliveries available during Sunday and PH</div>
         </div>
-    </div>
+    </div> --}}
 </div>
 <!-- END VENDOR -->
 <div class="flex relative max-width-full align-center"><img src="{{asset('assets/6303b7b9afc8585f7943565c_shape 2.svg')}}" loading="lazy" alt="" class="absolute bottom-left ea-left" />
@@ -239,7 +239,7 @@ Product Name - Big V
         <div class="card27 padding-small margin-small sticky-top ea-left" id="reviewSummary">
             <h4 class="text-color-dark-grey">Reviews</h4>
             <div class="flex gap-small"><img src="{{asset('assets/Star 1.svg')}}" loading="lazy" alt="" />
-                <h5 class="heading-4 p-beside-star">4.9</h5>
+                <h5 class="heading-4 p-beside-star">{{ $product->rating }}</h5>
                 <h5 class="heading-4 p-beside-star">/</h5>
                 <h5 class="heading-4 p-beside-star">5</h5></div>
             <h5 class="heading-4 p-beside-star">300 Rating</h5>
@@ -329,9 +329,13 @@ Product Name - Big V
 <div class="c-product-form w-form">
     <div class="c-product-form__row">
         <div class="c-product-form__col col-sizing--grow">
-            <h3 class="product-name heading-2 text-color-grey">Shield Pearl Gi (Men)</h3>
+            <h3 class="product-name heading-2 text-color-grey">{{ count($product->variations) > 0 ? ($product->variations[0]->name == "novariation" ? $product->name : $product->variations[0]->name) : $product->name }}</h3>
             <div class="popup-atc-price-n-star">
-                <h4 class="heading-3">$129.99</h4> 
+                @if ($product->variations[0]->name == "novariation")
+                    <h4 class="product-price heading-3">${{ $product->variations[0]->price }}</h4>
+                @else
+                    <h4 class="product-price heading-3">${{ $minProductPrice }} - ${{ $maxProductPrice }}</h4>
+                @endif
                 <div class="flex">
                     <div class="c-product-rating__star">
                         <div class="icon">
