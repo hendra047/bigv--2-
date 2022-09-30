@@ -55,5 +55,11 @@ class ProductController extends Controller
 
     public function filter(Request $request)
     {
+        $products = DB::table('products');
+        foreach ($request->products) {
+            
+        }
+
+        return view('user.product.products', ['products' => $products]);
     }
 }
