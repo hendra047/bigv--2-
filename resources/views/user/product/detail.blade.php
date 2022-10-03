@@ -448,12 +448,6 @@ Product Name - Big V
             document.querySelector(".btn-add-cart").addEventListener("click", function(event) {
                 event.preventDefault();
 
-                var hostname = "{{ request()->getHost() }}";
-                var url = "{{ config('app.url') }}";
-                if (hostname.includes('www')) {
-                    url = "https://" + hostname
-                }
-
                 if ($(".product-variation.selected").length > 0) {
                     $.post(url + ":8000/user/cart", {
                         _token: CSRF_TOKEN,

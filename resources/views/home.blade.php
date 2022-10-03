@@ -46,7 +46,7 @@ Product Name - Big V
                                 <p class="float-price">$</p>
                             </div>
                         </div>
-                        <input type="submit" value="Filter" class="submit-button atc-button margin-top w-button" style="margin-top: 20px;" />
+                        <button type="button" class="btn-filter submit-button atc-button margin-top w-button" style="margin-top: 20px;">Filter</button>
                     </form>
                 </div>
             </div>
@@ -60,7 +60,7 @@ Product Name - Big V
                                     @foreach($productCategories as $productCategory)
                                     <label class="w-checkbox">
                                         <div class="w-checkbox-input w-checkbox-input--inputType-custom checkbox"></div>
-                                        <input type="checkbox" id="checkbox-{{ $productCategory->id + 1 }}" name="category[]" style="opacity:0;position:absolute;z-index:-1" value="{{ $productCategory->id }}" /><span class="text-size-small w-form-label" for="checkbox-{{ $productCategory->id + 1 }}">{{ $productCategory->name }}</span></label>
+                                        <input type="checkbox" id="checkbox-{{ $productCategory->id + 1 }}" class="checkbox-category" name="category[]" style="opacity:0;position:absolute;z-index:-1" value="{{ $productCategory->id }}" /><span class="text-size-small w-form-label" for="checkbox-{{ $productCategory->id + 1 }}">{{ $productCategory->name }}</span></label>
                                     @endforeach
                                     <label class="w-checkbox">
                                         <div class="w-checkbox-input w-checkbox-input--inputType-custom checkbox"></div>
@@ -69,11 +69,11 @@ Product Name - Big V
                                     </label>
                                         <label for="email">Price</label>
                                         <div class="flex justify-left" style="gap: 5px;">
-                                            <input type="number" class="quantity-pill-small price-range-filter">
+                                            <input type="number" class="quantity-pill-small price-range-filter min">
                                             <p class="margin-0">-</p>
-                                            <input type="number" class="quantity-pill-small price-range-filter">
+                                            <input type="number" class="quantity-pill-small price-range-filter max">
                                         </div>
-                                        <input type="submit" value="Filter" class="submit-button atc-button margin-top w-button" style="margin-top: 20px;" />
+                                        <button type="button" class="btn-filter submit-button atc-button margin-top w-button" style="margin-top: 20px;">Filter</button>
                                 </form>
                             </div>
                         </div>
@@ -94,7 +94,9 @@ Product Name - Big V
                     </div>
                 </div>
             </div>
-            @include('user.product.products')
+            <div id="container-product">
+                @include('user.product.products')
+            </div>
         </div>
     </div>
     <div class="pagination flex justify-center margin-large">
@@ -114,6 +116,22 @@ Product Name - Big V
 @section('javascript-extra')
 <script src="{{asset('assets/js/script-product-list.js')}}" type="text/javascript"></script>
 <script>
-    
+    $(".btn-filter").on("click", function() {
+        var checkedFilter = [];
+        $(".checkbox-category").each(function() {
+            if ($(this).prev().is(".w--redirected-checked")) {
+                checkedFilter.push($(this).val());
+            }
+        });
+
+        $.post(url + ":8000/product/filter", {
+            _token: CSRF_TOKEN,
+            categories: checkedFilter,
+            min_price: $(".price-range-filter.min").val(),
+            max_price: $(".price-range-filter.max").val(),
+        }).done(function(data) {
+            $("#container-product").html(data);
+        });
+    });
 </script>
 @endsection

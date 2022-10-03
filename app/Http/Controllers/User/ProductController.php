@@ -7,6 +7,7 @@ use App\Models\Addon;
 use App\Models\Product;
 use App\Models\ProductVariation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -55,10 +56,30 @@ class ProductController extends Controller
 
     public function filter(Request $request)
     {
-        $products = DB::table('products');
-        foreach ($request->products) {
-            
+        $products = Product::with(['vendor' => function ($query) {
+            $query->with(['location']);
+        }, 'category', 'images']);
+        if (isset($request->categories)) {
+            if (count($request->categories) > 0) {
+                foreach ($request->categories as $category) {
+                    $products->orWhere('category_id', $category);
+                }
+            }
         }
+
+        if (isset($request->min_price)) {
+            $products->with(['variations' => function ($query) use ($request) {
+                $query->where('price', '>=', $request->min_price);
+            },]);
+        }
+
+        if (isset($request->max_price)) {
+            $products->with(['variations' => function ($query) use ($request) {
+                dd($request);
+                $query->where('price', '<=', $request->max_price);
+            },]);
+        }
+        $products = $products->get();
 
         return view('user.product.products', ['products' => $products]);
     }

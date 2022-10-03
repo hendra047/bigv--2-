@@ -56,10 +56,11 @@ Auth::routes(['verify' => true]);
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::resource('product', ProductController::class);
-
+Route::post('product/filter', [ProductController::class, 'filter']);
 
 Route::group(['middleware' => ['user', 'verified'], 'as' => 'user.', 'prefix' => 'user'], function () {
-    Route::post('cart/{id}/{qty}', [CartController::class, 'update']);
+    // Route::post('cart/{id}/{qty}', [CartController::class, 'update']);
+
     Route::resource('cart', CartController::class);
     Route::resource('discount', DiscountController::class);
     Route::resource('payment-method', PaymentMethodController::class);
