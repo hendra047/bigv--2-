@@ -37,12 +37,12 @@ Product Name - Big V
                         <label for="email">Price</label>
                         <div class="flex justify-left" style="gap: 5px;">
                             <div class="relative">
-                                <input type="number" class="quantity-pill-small price-range-filter" min="0">
+                                <input type="number" id="min-price-1" class="quantity-pill-small price-range-filter" min="0">
                                 <p class="float-price">$</p>
                             </div>
                             <p class="margin-0">-</p>
                             <div class="relative">
-                                <input type="number" class="quantity-pill-small price-range-filter" min="0">
+                                <input type="number" id="max-price-1" class="quantity-pill-small price-range-filter" min="0">
                                 <p class="float-price">$</p>
                             </div>
                         </div>
@@ -69,9 +69,9 @@ Product Name - Big V
                                     </label>
                                         <label for="email">Price</label>
                                         <div class="flex justify-left" style="gap: 5px;">
-                                            <input type="number" class="quantity-pill-small price-range-filter min">
+                                            <input type="number" id="min-price-2" class="quantity-pill-small price-range-filter">
                                             <p class="margin-0">-</p>
-                                            <input type="number" class="quantity-pill-small price-range-filter max">
+                                            <input type="number" id="max-price-2" class="quantity-pill-small price-range-filter">
                                         </div>
                                         <button type="button" class="btn-filter submit-button atc-button margin-top w-button" style="margin-top: 20px;">Filter</button>
                                 </form>
@@ -123,12 +123,21 @@ Product Name - Big V
                 checkedFilter.push($(this).val());
             }
         });
-
+        
+        var min, max = 0;
+        if ($(".filter.sticky-filter:visible").length > 0) {
+            min = $("#min-price-1").val();
+            max = $("#max-price-1").val();
+        } else if ($(".filter.filter-hamburger:visible").length > 0) {
+            min = $("#min-price-2").val();
+            max = $("#max-price-2").val();
+        }
+        
         $.post(url + ":8000/product/filter", {
             _token: CSRF_TOKEN,
             categories: checkedFilter,
-            min_price: $(".price-range-filter.min").val(),
-            max_price: $(".price-range-filter.max").val(),
+            min_price: min,
+            max_price: max,
         }).done(function(data) {
             $("#container-product").html(data);
         });

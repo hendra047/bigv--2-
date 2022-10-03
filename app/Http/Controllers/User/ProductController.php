@@ -56,31 +56,24 @@ class ProductController extends Controller
 
     public function filter(Request $request)
     {
-        $products = Product::with(['vendor' => function ($query) {
-            $query->with(['location']);
-        }, 'category', 'images']);
-        if (isset($request->categories)) {
-            if (count($request->categories) > 0) {
-                foreach ($request->categories as $category) {
-                    $products->orWhere('category_id', $category);
-                }
-            }
-        }
+        $products = Product::with(['vendor']);
 
         if (isset($request->min_price)) {
             $products->with(['variations' => function ($query) use ($request) {
                 $query->where('price', '>=', $request->min_price);
-            },]);
+            },])->whereHas('variations', function ($query) use ($request) {
+                $query->where('price', '>=', $request->min_price);
+            });
         }
 
         if (isset($request->max_price)) {
             $products->with(['variations' => function ($query) use ($request) {
-                dd($request);
                 $query->where('price', '<=', $request->max_price);
-            },]);
+            },])->whereHas('variations', function ($query) use ($request) {
+                $query->where('price', '<=', $request->max_price);
+            });
         }
         $products = $products->get();
-
         return view('user.product.products', ['products' => $products]);
     }
 }
