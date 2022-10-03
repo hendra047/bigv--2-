@@ -58,6 +58,12 @@ class ProductController extends Controller
     {
         $products = Product::with(['vendor']);
 
+        if (isset($request->categories)) {
+            foreach ($request->categories as $category) {
+                $products->orWhere('category_id', $category);
+            }
+        }
+
         if (isset($request->min_price)) {
             $products->with(['variations' => function ($query) use ($request) {
                 $query->where('price', '>=', $request->min_price);
@@ -74,6 +80,7 @@ class ProductController extends Controller
             });
         }
         $products = $products->get();
+
         return view('user.product.products', ['products' => $products]);
     }
 }
