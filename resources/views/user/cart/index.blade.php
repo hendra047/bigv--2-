@@ -63,7 +63,7 @@ Cart - Big V
                     <div class="div-block-24">
                         <div class="inline text-weight-bold">Total</div>
                         <div class="inline text-weight-bold">$<span id="grand-total-price">0</span></div>
-                    </div><a href="#" class="checkout-button oh-grow w-button">Proceed to Checkout</a></div>
+                    </div><a id="btn-proceed" href="javascript:void(0)" class="checkout-button oh-grow w-button">Proceed to Checkout</a></div>
             </div>
         </div><img src="{{asset('assets/6303b67a5064f05035c5a701_shape 1.svg')}}" loading="lazy" alt="" class="absolute shape-cart" />
         <div class="new-products-section padding-xxlarge ea-fade">
@@ -97,7 +97,7 @@ Cart - Big V
 @section('javascript-extra')
 <script src="{{asset('assets/js/script-cart-checkout.js')}}" type="text/javascript"></script>
 <script>
-    var totalCheckout = {};
+    var cartItems = {};
 
     function roundUp(num, precision) {
         precision = Math.pow(10, precision);
@@ -106,14 +106,14 @@ Cart - Big V
 
     function updateCheckout() {       
         var grandTotalPrice = 0;
-        if (Object.keys(totalCheckout).length > 0) {
+        if (Object.keys(cartItems).length > 0) {
             $(".container-summary-item").html("");
-            for (var key in totalCheckout) {
-                if (!totalCheckout.hasOwnProperty(key)) continue;
+            for (var key in cartItems) {
+                if (!cartItems.hasOwnProperty(key)) continue;
                 
                 var totalPrice = 0;
                 var totalItem = 0;
-                var vendor = totalCheckout[key];
+                var vendor = cartItems[key];
                 for (var item in vendor) {
                     if (!vendor.hasOwnProperty(item)) continue;
     
@@ -141,32 +141,14 @@ Cart - Big V
         }
         $("#grand-total-price").html(grandTotalPrice.toFixed(2));
     }
-</script>
-<script>
-    $(document).ready(function() {
-        $("input[type=checkbox]").each(function() {
-            if ($(this).is(":checked")) {
-                $(this).prop("checked", false);
-            }
-        });
-    });
-    $(document).on("click", ".quantity-change", function(){
-        var qty = $(this).parent().find(".product-quantity");
-        if ($(this).attr("logic") == "add"){
-            qty.val(parseInt(qty.val()) + 1);
-        }
-        else{
-            if (qty.val() != 1) qty.val(parseInt(qty.val()) - 1);
-        }
-    });
 
-    $(document).on("change", ".product-cart", function() {
-        var parent = $(this).parents(".vendor-item");
+    function updateBaseCheckout(checkbox) {
+        var parent = checkbox.parents(".vendor-item");
         var vendorId = parent.attr("vendor-id");
-        var cartId = $(this).val();
-
-        if (this.checked) {
-            var quantity = $(this).parents().next().find(".product-quantity").val();
+        var cartId = checkbox.val();
+        
+        if (checkbox.is(":checked")) {
+            var quantity = checkbox.parents().next().find(".product-quantity").val();
 
             $.post(url + ":8000/user/cart/" + cartId, {
                 _token: CSRF_TOKEN,
@@ -179,25 +161,53 @@ Cart - Big V
                     }
                 }
 
-                if (data.vendor_id in totalCheckout) {
-                    totalCheckout[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
+                if (data.vendor_id in cartItems) {
+                    cartItems[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
                 } else {
-                    totalCheckout[data.vendor_id] = {};
-                    totalCheckout[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
+                    cartItems[data.vendor_id] = {};
+                    cartItems[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
                 }
-                totalCheckout[data.vendor_id]["vendor_name"] = data.vendor_name;
+                cartItems[data.vendor_id]["vendor_name"] = data.vendor_name;
                 
                 updateCheckout();
             }).fail(function(error) {
                 console.log(error);
             });
         } else {
-            delete totalCheckout[vendorId][cartId];
-            if (Object.keys(totalCheckout[vendorId]).length <= 1) {
-                delete totalCheckout[vendorId];
+            if (Object.keys(cartItems).length > 0) {
+                delete cartItems[vendorId][cartId];
+                if (Object.keys(cartItems[vendorId]).length <= 1) {
+                    delete cartItems[vendorId];
+                }
+                updateCheckout();
             }
-            updateCheckout();
         }
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        $("input[type=checkbox]").each(function() {
+            if ($(this).is(":checked")) {
+                $(this).prop("checked", false);
+            }
+        });
+    });
+
+    $(document).on("click", ".quantity-change", function(){
+        var qty = $(this).parent().find(".product-quantity");
+        if ($(this).attr("logic") == "add"){
+            qty.val(parseInt(qty.val()) + 1);
+        }
+        else{
+            if (qty.val() != 1) qty.val(parseInt(qty.val()) - 1);
+        }
+
+        updateBaseCheckout($(this).parents(".vendor-item").find(".product-cart"));
+        updateCheckout();
+    });
+
+    $(document).on("change", ".product-cart", function() {
+        updateBaseCheckout($(this));
     });
 
     $(document).on("click", ".btn-delete-product", function() {
@@ -214,12 +224,12 @@ Cart - Big V
                 var obj = JSON.parse(data);
 
                 if (checkbox.is(":checked")) {
-                    if (Object.keys(totalCheckout).length <= 1) {
-                        delete totalCheckout[obj.vendor_id];
+                    if (Object.keys(cartItems).length <= 1) {
+                        delete cartItems[obj.vendor_id];
                     } else {
-                        delete totalCheckout[obj.vendor_id][obj.cart_id];
-                        if (Object.keys(totalCheckout[obj.vendor_id]).length <= 1) {
-                            delete totalCheckout[obj.vendor_id];
+                        delete cartItems[obj.vendor_id][obj.cart_id];
+                        if (Object.keys(cartItems[obj.vendor_id]).length <= 1) {
+                            delete cartItems[obj.vendor_id];
                         }
                     }
                     updateCheckout();
@@ -230,6 +240,21 @@ Cart - Big V
             }).fail(function(error) {
                 console.log(error);
             });
+        }
+    });
+
+    $("#btn-proceed").on("click", function() {
+        if (Object.keys(cartItems).length > 0) {
+            if (Object.keys(cartItems[Object.keys(cartItems)[0]]).length > 0) {
+                $.post(url + ":8000/user/cart/verify-checkout", {
+                    _token: CSRF_TOKEN,
+                    carts: cartItems,
+                }).done(function(data) {
+                    console.log(data);
+                }).fail(function(error) {
+                    console.log(error);
+                });
+            }
         }
     });
 </script>

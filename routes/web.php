@@ -62,6 +62,7 @@ Route::group(['middleware' => ['user', 'verified'], 'as' => 'user.', 'prefix' =>
     // Route::post('cart/{id}/{qty}', [CartController::class, 'update']);
 
     Route::resource('cart', CartController::class);
+    Route::post('cart/verify-checkout', [ProductController::class, 'verifyCheckout']);
     Route::resource('discount', DiscountController::class);
     Route::resource('payment-method', PaymentMethodController::class);
     Route::resource('pickup-method', PickupMethodController::class);

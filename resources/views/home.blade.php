@@ -32,7 +32,7 @@ Product Name - Big V
                         @foreach($productCategories as $productCategory)
                         <label class="w-checkbox">
                             <div class="w-checkbox-input w-checkbox-input--inputType-custom checkbox"></div>
-                            <input type="checkbox" id="checkbox-{{ $productCategory->id + 1 }}" name="category[]" style="opacity:0;position:absolute;z-index:-1" value="{{ $productCategory->id }}" /><span class="text-size-small w-form-label" for="checkbox-{{ $productCategory->id + 1 }}">{{ $productCategory->name }}</span></label>
+                            <input type="checkbox" id="checkbox-{{ $productCategory->id + 1 }}" class="checkbox-category" name="category[]" style="opacity:0;position:absolute;z-index:-1" value="{{ $productCategory->id }}" /><span class="text-size-small w-form-label" for="checkbox-{{ $productCategory->id + 1 }}">{{ $productCategory->name }}</span></label>
                         @endforeach
                         <label for="email">Price</label>
                         <div class="flex justify-left" style="gap: 5px;">
@@ -94,7 +94,7 @@ Product Name - Big V
                     </div>
                 </div>
             </div>
-            <div id="container-product">
+            <div class="products-archive-grid" id="productsList">
                 @include('user.product.products')
             </div>
         </div>
@@ -139,7 +139,7 @@ Product Name - Big V
             min_price: min,
             max_price: max,
         }).done(function(data) {
-            $("#container-product").html(data);
+            $("#productsList").html(data);
         });
     });
 </script>
