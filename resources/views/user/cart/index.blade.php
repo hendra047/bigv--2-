@@ -63,7 +63,14 @@ Cart - Big V
                     <div class="div-block-24">
                         <div class="inline text-weight-bold">Total</div>
                         <div class="inline text-weight-bold">$<span id="grand-total-price">0</span></div>
-                    </div><a id="btn-proceed" href="javascript:void(0)" class="checkout-button oh-grow w-button">Proceed to Checkout</a></div>
+                    </div>
+                        <form method="POST" action="{{ url('user/cart/verify-checkout') }}">
+                            @csrf
+
+                            <input id="cart-items" type="hidden" name="carts">
+                            <button id="btn-proceed" type="submit" class="checkout-button oh-grow w-button" style="width: 100%;">Proceed to Checkout</button>
+                        </form>
+                    </div>
             </div>
         </div><img src="{{asset('assets/6303b67a5064f05035c5a701_shape 1.svg')}}" loading="lazy" alt="" class="absolute shape-cart" />
         <div class="new-products-section padding-xxlarge ea-fade">
@@ -246,14 +253,7 @@ Cart - Big V
     $("#btn-proceed").on("click", function() {
         if (Object.keys(cartItems).length > 0) {
             if (Object.keys(cartItems[Object.keys(cartItems)[0]]).length > 0) {
-                $.post(url + ":8000/user/cart/verify-checkout", {
-                    _token: CSRF_TOKEN,
-                    carts: cartItems,
-                }).done(function(data) {
-                    console.log(data);
-                }).fail(function(error) {
-                    console.log(error);
-                });
+                $("#cart-items").val(JSON.stringify(cartItems));
             }
         }
     });

@@ -12,6 +12,12 @@ use DB;
 
 class CartController extends Controller
 {
+    public function __construct()
+    {
+        // session()->forget('checkout-items');
+        session()->flush();
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\UserTierController as AdminUserTierController;
 use App\Http\Controllers\Admin\VendorController as AdminVendorController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\DiscountController;
 use App\Http\Controllers\User\PaymentMethodController;
 use App\Http\Controllers\User\PickupMethodController;
@@ -61,8 +62,9 @@ Route::post('product/filter', [ProductController::class, 'filter']);
 Route::group(['middleware' => ['user', 'verified'], 'as' => 'user.', 'prefix' => 'user'], function () {
     // Route::post('cart/{id}/{qty}', [CartController::class, 'update']);
 
+    Route::post('cart/verify-checkout', [CheckoutController::class, 'verifyCheckout']);
+    Route::get('cart/checkout', [CheckoutController::class, 'getCheckout']);
     Route::resource('cart', CartController::class);
-    Route::post('cart/verify-checkout', [ProductController::class, 'verifyCheckout']);
     Route::resource('discount', DiscountController::class);
     Route::resource('payment-method', PaymentMethodController::class);
     Route::resource('pickup-method', PickupMethodController::class);

@@ -83,17 +83,4 @@ class ProductController extends Controller
 
         return view('user.product.products', ['products' => $products]);
     }
-
-    public function verifyCheckout(Request $request)
-    {
-        if (isset($request->carts)) {
-            if (count($request->carts) > 0) {
-                foreach ($request->carts as $key => $cart) {
-                    foreach ($cart as $product) {
-                        return $product['price'];
-                    }
-                }
-            }
-        }
-    }
 }

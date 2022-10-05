@@ -1,4 +1,4 @@
-@extends('template.layout')
+@extends('user.template.layout')
 
 @section('page-title')
 Checkout - Big V

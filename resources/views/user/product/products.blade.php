@@ -26,7 +26,7 @@
                     @endif
                 @else
                     @if (count($product->variations) > 1)
-                    <div class="text-rich-text text-color-orange text-weight-bold">${{ $product->variations->min('price') }} - ${{ $product->variations->max('price') }}</div>
+                        <div class="text-rich-text text-color-orange text-weight-bold">${{ $product->variations->min('price') }} - ${{ $product->variations->max('price') }}</div>
                     @else
                         <div class="text-rich-text text-color-orange text-weight-bold">${{ $product->variations[0]->name == "novariation" ? $product->variations[0]->price : "" }}</div>
                     @endif
