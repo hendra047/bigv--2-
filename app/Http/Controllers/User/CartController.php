@@ -14,8 +14,8 @@ class CartController extends Controller
 {
     public function __construct()
     {
-        // session()->forget('checkout-items');
-        session()->flush();
+        session()->forget('checkout-items');
+        session()->save();
     }
 
     /**

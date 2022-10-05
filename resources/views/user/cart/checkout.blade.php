@@ -120,32 +120,33 @@ Checkout - Big V
                         </a>
                     </div>
                 </div>
-                @for ($i = 0; $i < 2; $i++) 
-                <div class="vendors-card ea-left">
-                    <div class="flex gap-medium"><img src="{{asset('assets/630193c64ebe68075a463721_profile-005.jpg')}}" loading="lazy" alt="" class="image-17" />
-                        <div>
-                            <h5 class="text-color-dark-grey">Polia</h5>
-                            <div class="text-size-small text-color-grey">Location: East</div>
-                        </div>
-                    </div>
-                    <div class="div-line"></div>
-                    @for ($j = 0; $j < 5; $j++) 
-                    <div class="vendor-item">
-                        <div class="flex gap-medium">
-                            <img src="https://bigvsg.com/wp-content/uploads/2021/12/WhatsApp-Image-2021-12-28-at-11.47.58.jpeg" loading="lazy" srcset="https://bigvsg.com/wp-content/uploads/2021/12/WhatsApp-Image-2021-12-28-at-11.47.58.jpeg" alt="" class="image-18" />
+                @foreach ($checkouts as $checkout)
+                {{ dd($checkout) }}
+                    <div class="vendors-card ea-left">
+                        <div class="flex gap-medium"><img src="{{ $checkout->photo }}" loading="lazy" alt="" class="image-17" />
                             <div>
-                                <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
-                                <div class="text-size-small text-color-grey">Color: white</div>
-                                <div class="text-size-small text-color-grey">$10</div>
+                                <h5 class="text-color-dark-grey">{{ $checkout->name }}</h5>
+                                <div class="text-size-small text-color-grey">Location: East</div>
                             </div>
                         </div>
-                        <div class="flex gap-small">
-                            <p class="m-0">x1</p>
+                        <div class="div-line"></div>
+                        @for ($j = 0; $j < 5; $j++) 
+                        <div class="vendor-item">
+                            <div class="flex gap-medium">
+                                <img src="https://bigvsg.com/wp-content/uploads/2021/12/WhatsApp-Image-2021-12-28-at-11.47.58.jpeg" loading="lazy" srcset="https://bigvsg.com/wp-content/uploads/2021/12/WhatsApp-Image-2021-12-28-at-11.47.58.jpeg" alt="" class="image-18" />
+                                <div>
+                                    <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
+                                    <div class="text-size-small text-color-grey">Color: white</div>
+                                    <div class="text-size-small text-color-grey">$10</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-small">
+                                <p class="m-0">x1</p>
+                            </div>
                         </div>
+                        @endfor
                     </div>
-                    @endfor
-                </div>
-                @endfor
+                @endforeach
             </div>
             <div class="sticky-summary flex-shrink-0 flex-grow-0 w-50">
                 <div class="cart-summary">
