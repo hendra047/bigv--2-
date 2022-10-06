@@ -128,6 +128,8 @@
 		var url = "{{ config('app.url') }}";
 		if (hostname.includes('www')) {
 			url = "https://" + hostname
+		} else if (hostname.includes('localhost')) {
+			url += ":8000";
 		}
 	</script>
 	@yield('javascript-extra')

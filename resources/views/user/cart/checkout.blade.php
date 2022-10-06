@@ -121,30 +121,29 @@ Checkout - Big V
                     </div>
                 </div>
                 @foreach ($checkouts as $checkout)
-                {{ dd($checkout) }}
                     <div class="vendors-card ea-left">
                         <div class="flex gap-medium"><img src="{{ $checkout->photo }}" loading="lazy" alt="" class="image-17" />
                             <div>
                                 <h5 class="text-color-dark-grey">{{ $checkout->name }}</h5>
-                                <div class="text-size-small text-color-grey">Location: East</div>
+                                <div class="text-size-small text-color-grey">Location: {{ $checkout->location->name }}</div>
                             </div>
                         </div>
                         <div class="div-line"></div>
-                        @for ($j = 0; $j < 5; $j++) 
-                        <div class="vendor-item">
-                            <div class="flex gap-medium">
-                                <img src="https://bigvsg.com/wp-content/uploads/2021/12/WhatsApp-Image-2021-12-28-at-11.47.58.jpeg" loading="lazy" srcset="https://bigvsg.com/wp-content/uploads/2021/12/WhatsApp-Image-2021-12-28-at-11.47.58.jpeg" alt="" class="image-18" />
-                                <div>
-                                    <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
-                                    <div class="text-size-small text-color-grey">Color: white</div>
-                                    <div class="text-size-small text-color-grey">$10</div>
+                        @foreach ($checkout->products as $product)
+                            <div class="vendor-item">
+                                <div class="flex gap-medium">
+                                    <img loading="lazy" srcset="{{ $product->featured_image }}" alt="" class="image-18" />
+                                    <div>
+                                        <h5 class="text-color-dark-grey">{{ $product->product_name }}</h5>
+                                        <div class="text-size-small text-color-grey">{{ $product->product_variation_name }}</div>
+                                        <div class="text-size-small text-color-grey">${{ $product->price }}</div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-small">
+                                    <p class="m-0">x{{ $product->quantity }}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-small">
-                                <p class="m-0">x1</p>
-                            </div>
-                        </div>
-                        @endfor
+                        @endforeach
                     </div>
                 @endforeach
             </div>
@@ -160,8 +159,8 @@ Checkout - Big V
                     </div>
                     <h4 class="heading-8 text-color-dark-grey">Summary</h4>
                     <div class="div-block-24 text-color-grey">
-                        <div class="inline">Total Price (30 items)</div>
-                        <div class="inline">$201</div>
+                        <div class="inline">Total Price ({{ $total_items }} items)</div>
+                        <div class="inline">${{ $total_price }}</div>
                     </div>
                     <div class="div-block-24 text-color-grey">
                         <div class="inline">Shipping Price</div>
@@ -174,7 +173,7 @@ Checkout - Big V
                     <div class="div-line-sumarry"></div>
                     <div class="div-block-24 text-color-dark-grey">
                         <div class="inline text-weight-bold">Total</div>
-                        <div class="inline text-weight-bold">$228</div>
+                        <div class="inline text-weight-bold">$0</div>
                     </div><a href="#" class="checkout-button oh-grow w-button">Place Order</a>
                     <a href="#" class="payment-gateway-button w-inline-block">
                         <div class="text-weight-bold">HitPay Payment Gateway</div><img src="{{asset('assets/6312dbbdcf1b3f0de3362511_Hitpay.png')}}" loading="lazy" alt="" />
@@ -213,26 +212,26 @@ Checkout - Big V
                 <div id="shippingAddressList">
                     <div class="d-flex justify-content-between m-2">
                         <div class="form-block-3 w-form">
-                            <input type="text" class="text-field-2 w-input" maxlength="256" placeholder="Search address">
+                            <input id="keyword-address" type="text" name="keyword_address" class="text-field-2 w-input" maxlength="256" placeholder="Search address">
                         </div>
-                        <a href="#" class="search-modal" tabindex="0">Search</a>
+                        <button id="btn-search-address" type="button" class="search-modal" tabindex="0">Search</a>
                     </div>
                     <div class="div-line ml-3 mr-3"></div>
                     <div class="custom-button d-flex justify-content-center p-3 cursor-pointer mr-2 ml-2 mb-3" id="addNewAddressShipping">
                         <p class="m-0 color-custom-gray">Add New Address</p>
                     </div>
-                    <div class="d-flex flex-column modal-list-container">
-                        @for ($i = 0; $i < 10; $i++) 
+                    <div id="list-address" class="d-flex flex-column modal-list-container">
+                        @foreach ($addresses as $address) 
                         <div class="delivery-add-item w-auto mr-2 ml-2 flex-column align-items-start address-button cursor-pointer">
-                            <h4 class="heading-7">Neilson Soeratman</h4>
-                            <div class="text-size-small">082337363440</div>
+                            <h4 class="heading-7">{{ $address->name }}</h4>
+                            <div class="text-size-small">{{ $address->phone }}</div>
                             <div class="text-size-small">
-                                [Block Number] [Street Name] <br>
-                                #[Unit Level]-[Unit Number] [Building Name] <br>
-                                Singapore [Postal Code]
+                                {{ $address->block_number }} {{ $address->street }} <br>
+                                #{{ $address->unit_level }}-{{ $address->unit_number }} {{ $address->building_name }}<br>
+                                Singapore {{ $address->postal_code }}
                             </div>
                         </div>
-                        @endfor
+                        @endforeach
                     </div>
                 </div>
                 <div id="shippingNewAddress" class="d-none">
@@ -307,7 +306,7 @@ Checkout - Big V
             <div class="modal-header">
                 <h4 class="modal-title h4 ml-2" id="discountModal">Choose Discount</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                    <span aria-hidden="true">x</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -357,6 +356,12 @@ Checkout - Big V
         } else {
             if (qty.val() != 1) qty.val(parseInt(qty.val()) - 1);
         }
+    });
+
+    $("#btn-search-address").on("click", function() {
+        var keyword = $("#keyword-address").val();
+
+        $.post(url + "")
     });
 
     $("#deliveryShippingButton").on('click', function() {

@@ -449,7 +449,7 @@ Product Name - Big V
                 event.preventDefault();
 
                 if ($(".product-variation.selected").length > 0) {
-                    $.post(url + ":8000/user/cart", {
+                    $.post(url + "/user/cart", {
                         _token: CSRF_TOKEN,
                         product_variation_id: $(".product-variation.selected").attr("variation-id"),
                         quantity: $(".product-quantity").val()
@@ -459,7 +459,7 @@ Product Name - Big V
                         console.log(error);
                     });
                 } else {
-                    $.post(url + ":8000/user/cart", {
+                    $.post(url + "/user/cart", {
                         _token: CSRF_TOKEN,
                         product_variation_id: $(".product-price").attr("variation-id"),
                         quantity: $(".product-quantity").val()

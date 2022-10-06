@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('street')->nullable();
             $table->string('building_name')->nullable();
             $table->integer('unit_level')->nullable();
-            $table->integer('building_number')->nullable();
+            $table->integer('block_number')->nullable();
             $table->integer('unit_number')->nullable();
             $table->string('postal_code');
             $table->unsignedBigInteger('user_id')->index();

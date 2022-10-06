@@ -125,7 +125,7 @@ Cart - Big V
                     if (!vendor.hasOwnProperty(item)) continue;
     
                     if (!isNaN(parseInt(item))) {
-                        totalPrice += vendor[item].price;
+                        totalPrice += vendor[item].sub_total_price;
                         totalItem += vendor[item].quantity;
                     }
                 }
@@ -157,7 +157,7 @@ Cart - Big V
         if (checkbox.is(":checked")) {
             var quantity = checkbox.parents().next().find(".product-quantity").val();
 
-            $.post(url + ":8000/user/cart/" + cartId, {
+            $.post(url + "/user/cart/" + cartId, {
                 _token: CSRF_TOKEN,
                 _method: "PUT", 
                 quantity: quantity,
@@ -169,10 +169,10 @@ Cart - Big V
                 }
 
                 if (data.vendor_id in cartItems) {
-                    cartItems[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
+                    cartItems[data.vendor_id][cartId] = {sub_total_price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
                 } else {
                     cartItems[data.vendor_id] = {};
-                    cartItems[data.vendor_id][cartId] = {price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
+                    cartItems[data.vendor_id][cartId] = {sub_total_price: roundUp((data.price * data.quantity), 2), quantity: data.quantity};
                 }
                 cartItems[data.vendor_id]["vendor_name"] = data.vendor_name;
                 
@@ -224,7 +224,7 @@ Cart - Big V
         var cartId = checkbox.val();
 
         if (confirm('Are you sure you want to delete this item?')) {
-            $.post(url + ":8000/user/cart/" + cartId, {
+            $.post(url + "/user/cart/" + cartId, {
                 _token: CSRF_TOKEN,
                 _method: "DELETE",
             }).done(function(data) {

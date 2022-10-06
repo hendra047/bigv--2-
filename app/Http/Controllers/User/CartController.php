@@ -14,6 +14,7 @@ class CartController extends Controller
 {
     public function __construct()
     {
+        session()->forget('total-checkout-price');
         session()->forget('checkout-items');
         session()->save();
     }
@@ -31,7 +32,7 @@ class CartController extends Controller
                 ->join('carts', 'carts.product_variation_id', '=', 'product_variations.id')
                 ->whereNull('carts.transaction_id')
                 ->where('user_id', auth()->user()->id);
-        }])->whereHas('products', function ($q1) {
+        }, 'location'])->whereHas('products', function ($q1) {
             $q1->select('vendor_id')
                 ->join('product_variations', 'product_variations.product_id', '=', 'products.id')
                 ->join('carts', 'carts.product_variation_id', '=', 'product_variations.id')
