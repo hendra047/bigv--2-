@@ -119,4 +119,21 @@ class UserAddressController extends Controller
 
         return redirect('user/user-address')->with('success', 'Address deleted successfully.');
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->keyword;
+        $addresses = UserAddress::orWhere('name', $keyword)
+            ->orWhere('phone', $keyword)
+            ->orWhere('additional_info', $keyword)
+            ->orWhere('street', $keyword)
+            ->orWhere('building_name', $keyword)
+            ->orWhere('unit_level', $keyword)
+            ->orWhere('block_number', $keyword)
+            ->orWhere('unit_number', $keyword)
+            ->orWhere('postal_code', $keyword)
+            ->get();
+
+        return 
+    }
 }

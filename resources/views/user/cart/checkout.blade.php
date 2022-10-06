@@ -361,7 +361,7 @@ Checkout - Big V
     $("#btn-search-address").on("click", function() {
         var keyword = $("#keyword-address").val();
 
-        $.post(url + "")
+        $.post(url + "/")
     });
 
     $("#deliveryShippingButton").on('click', function() {

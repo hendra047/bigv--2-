@@ -22,7 +22,7 @@ class UserAddressSeeder extends Seeder
         $temp->street = "Blk 150A Bishan Street 11";
         $temp->building_name = "Green Watten";
         $temp->unit_level = "1";
-        $temp->building_number = "1";
+        $temp->block_number = "1";
         $temp->unit_number = "221";
         $temp->postal_code = "569933";
         $temp->user_id = "1";
@@ -35,7 +35,7 @@ class UserAddressSeeder extends Seeder
         $temp->street = "Blk 145 Lorong 2 Toa Payoh";
         $temp->building_name = "Red Payoh";
         $temp->unit_level = "2";
-        $temp->building_number = "2";
+        $temp->block_number = "2";
         $temp->unit_number = "333";
         $temp->postal_code = "310145";
         $temp->user_id = "1";
