@@ -4279,7 +4279,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .text-field-2 {
   margin-bottom: 0px;
-  border-radius: 9px;
+  border-radius: 9px !important;
 }
 
 .discount-button {

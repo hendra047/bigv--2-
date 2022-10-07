@@ -42,10 +42,9 @@ class UserAddressController extends Controller
             'phone' => ['required', 'regex:/^((\+65)|(65)|0)\d{7,10}$/', 'min:10', 'max:15'],
             'additional_info' => 'nullable|string',
             'street' => 'nullable|string|max:255',
-            'condo' => 'nullable|string|max:255',
-            'estate' => 'nullable|string|max:255',
-            'label' => 'nullable|string|max:255',
-            'house_number' => 'nullable|string|max:255',
+            'building_name' => 'nullable|string|max:255',
+            'unit_level' => 'nullable|string|max:255',
+            'block_number' => 'nullable|string|max:255',
             'unit_number' => 'nullable|string|max:255',
             'postal_code' => 'required|string|max:6',
         ]);
@@ -94,10 +93,9 @@ class UserAddressController extends Controller
             'phone' => ['sometimes', 'required', 'regex:/^((\+65)|(65)|0)\d{7,10}$/', 'min:10', 'max:15'],
             'additional_info' => 'sometimes|nullable|string',
             'street' => 'sometimes|nullable|string|max:255',
-            'condo' => 'sometimes|nullable|string|max:255',
-            'estate' => 'sometimes|nullable|string|max:255',
-            'label' => 'sometimes|nullable|string|max:255',
-            'house_number' => 'sometimes|nullable|string|max:255',
+            'building_name' => 'sometimes|nullable|string|max:255',
+            'unit_level' => 'sometimes|nullable|string|max:255',
+            'block_number' => 'sometimes|nullable|string|max:255',
             'unit_number' => 'sometimes|nullable|string|max:255',
             'postal_code' => 'sometimes|required|string|max:6',
         ]);
@@ -123,17 +121,45 @@ class UserAddressController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->keyword;
-        $addresses = UserAddress::orWhere('name', $keyword)
-            ->orWhere('phone', $keyword)
-            ->orWhere('additional_info', $keyword)
-            ->orWhere('street', $keyword)
-            ->orWhere('building_name', $keyword)
-            ->orWhere('unit_level', $keyword)
-            ->orWhere('block_number', $keyword)
-            ->orWhere('unit_number', $keyword)
-            ->orWhere('postal_code', $keyword)
-            ->get();
+        $addresses = UserAddress::where('user_id', auth()->user()->id)->get();
 
-        return 
+        if (isset($keyword)) {
+            $addresses = UserAddress::where('user_id', auth()->user()->id)
+                ->where(function ($query) use ($keyword) {
+                    $query->where('name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('street', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('building_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('unit_level', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('block_number', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('unit_number', 'LIKE', '%' . $keyword . '%');
+                })
+                ->get();
+        }
+
+        if (isset($addresses)) {
+            return view('user.cart.itemAddressCheckout', ['addresses' => $addresses]);
+        }
+    }
+
+    public function createAddressAJAX(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => ['required', 'regex:/^((\+65)|(65)|0)\d{7,10}$/'],
+            'additional_info' => 'nullable|string',
+            'street' => 'nullable|string|max:255',
+            'building_name' => 'nullable|string|max:255',
+            'unit_level' => 'nullable|string|max:255',
+            'block_number' => 'nullable|string|max:255',
+            'unit_number' => 'nullable|string|max:255',
+            'postal_code' => 'required|string|max:6',
+        ]);
+
+        $data = $request->all();
+        $data += ['user_id' => auth()->user()->id];
+
+        UserAddress::create($data);
+
+        return 'New Address created successfully.';
     }
 }

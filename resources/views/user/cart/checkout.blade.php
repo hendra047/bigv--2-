@@ -204,8 +204,8 @@ Checkout - Big V
         <div class="modal-content br-27">
             <div class="modal-header">
                 <h4 class="modal-title h4 ml-2" id="addressModal">Choose Address</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                <button id="btn-close-address" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -221,31 +221,24 @@ Checkout - Big V
                         <p class="m-0 color-custom-gray">Add New Address</p>
                     </div>
                     <div id="list-address" class="d-flex flex-column modal-list-container">
-                        @foreach ($addresses as $address) 
-                        <div class="delivery-add-item w-auto mr-2 ml-2 flex-column align-items-start address-button cursor-pointer">
-                            <h4 class="heading-7">{{ $address->name }}</h4>
-                            <div class="text-size-small">{{ $address->phone }}</div>
-                            <div class="text-size-small">
-                                {{ $address->block_number }} {{ $address->street }} <br>
-                                #{{ $address->unit_level }}-{{ $address->unit_number }} {{ $address->building_name }}<br>
-                                Singapore {{ $address->postal_code }}
-                            </div>
-                        </div>
-                        @endforeach
+                        @include('user.cart.itemAddressCheckout')
                     </div>
                 </div>
                 <div id="shippingNewAddress" class="d-none">
-                    <div class="mb-3">
+                    <div class="mb-3" id="name">
                         <h5 class="text-color-dark-grey mb-1">Name</h5>
-                        <input type="text" class="text-field-2 w-input" id="name" placeholder="Name">
+                        <input type="text" class="text-field-2 w-input form-control" placeholder="Name">
+                        <div class="invalid-feedback"></div>                    
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" id="phoneNumber">
                         <h5 class="text-color-dark-grey mb-1">Phone Number</h5>
-                        <input type="text" class="text-field-2 w-input" id="phoneNumber" placeholder="Phone Number">
+                        <input type="text" class="text-field-2 w-input form-control" placeholder="Phone Number">
+                        <div class="invalid-feedback"></div>   
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" id="additionalInformation">
                         <h5 class="text-color-dark-grey mb-1">Additional Information</h5>
-                        <textarea class="text-field-2 w-input" id="additionalInformation" placeholder="Additional Information"></textarea>
+                        <textarea class="text-field-2 w-input form-control" placeholder="Additional Information"></textarea>
+                        <div class="invalid-feedback"></div>   
                     </div>
                     <div class="div-line"></div>
                     <h5 class="text-color-dark-grey mb-1">Address Format Type</h5>
@@ -268,31 +261,37 @@ Checkout - Big V
                     <div>
                         <div class="mb-3" id="blockNumber">
                             <h5 class="text-color-dark-grey mb-1">Block Number</h5>
-                            <input type="number" class="text-field-2 w-input" id="blockNumber" placeholder="Block Number">
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Block Number">
+                            <div class="invalid-feedback"></div>   
                         </div>
                         <div class="mb-3" id="streetName">
                             <h5 class="text-color-dark-grey mb-1">Street Name</h5>
-                            <input type="text" class="text-field-2 w-input" id="streetName" placeholder="Street Number">
+                            <input type="text" class="text-field-2 w-input form-control" placeholder="Street Number">
+                            <div class="invalid-feedback"></div>   
                         </div>
                         <div class="mb-3" id="unitLevel">
                             <h5 class="text-color-dark-grey mb-1">Unit Level</h5>
-                            <input type="number" class="text-field-2 w-input" id="unitLevel" placeholder="Unit Level">
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Unit Level">
+                            <div class="invalid-feedback"></div>   
                         </div>
                         <div class="mb-3" id="unitNumber">
                             <h5 class="text-color-dark-grey mb-1">Unit Number</h5>
-                            <input type="number" class="text-field-2 w-input" id="unitNumber" placeholder="Unit Number">
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Unit Number">
+                            <div class="invalid-feedback"></div>   
                         </div>
                         <div class="mb-3" id="buildingName">
                             <h5 class="text-color-dark-grey mb-1">Building Name</h5>
-                            <input type="text" class="text-field-2 w-input" id="buildingName" placeholder="Building Name">
+                            <input type="text" class="text-field-2 w-input form-control" placeholder="Building Name">
+                            <div class="invalid-feedback"></div>   
                         </div>
                         <div class="mb-3" id="postalCode">
                             <h5 class="text-color-dark-grey mb-1">Postal Code</h5>
-                            <input type="number" class="text-field-2 w-input" id="postalCode" placeholder="Postal Code">
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Postal Code">
+                            <div class="invalid-feedback"></div>   
                         </div>
                     </div>
                     <div class="d-flex justify-content-end" style="gap: 10px;">
-                        <a href="#" class="pr-4 pl-4 checkout-button w-button">Save</a>
+                        <button id="btn-create-address" class="pr-4 pl-4 checkout-button w-button">Save</button>
                         <a href="#" class="pr-4 pl-4 checkout-button w-button bg-secondary" id="cancelAddNewAddressShipping">Cancel</a>
                     </div>
                 </div>
@@ -349,6 +348,18 @@ Checkout - Big V
 @section('javascript-extra')
 <script src="{{asset('assets/js/script-cart-checkout.js')}}" type="text/javascript"></script>
 <script>
+    function getAddresses(keyword) {
+        $.post(url + "/user/user-address/search", {
+            _token: CSRF_TOKEN,
+            keyword: keyword,
+        }).done(function(data) {
+            $("#list-address").html(data);
+        }).fail(function() {
+            console.log("Error!");
+        });
+    }
+</script>
+<script>
     $(document).on("click", ".quantity-change", function() {
         var qty = $(this).parent().find(".product-quantity");
         if ($(this).attr("logic") == "add") {
@@ -361,7 +372,33 @@ Checkout - Big V
     $("#btn-search-address").on("click", function() {
         var keyword = $("#keyword-address").val();
 
-        $.post(url + "/")
+        getAddresses(keyword);
+    });
+
+    $("#btn-close-address").on("click", function() {
+        $("#keyword-address").val("");
+    });
+
+    $("#btn-create-address").on("click", function() {
+        $.post(url + "/user/user-address/create-address", {
+            _token: CSRF_TOKEN,
+            name: $("#name:visible input").val(),
+            phone: $("#phoneNumber:visible input").val(),
+            additional_info: $("#additionalInformation:visible textarea").val(),
+            block_number: $("#blockNumber:visible input").val(),
+            street: $("#streetName:visible input").val(),
+            unit_level: $("#unitLevel:visible input").val(),
+            unit_number: $("#unitNumber:visible input").val(),
+            building_name: $("#buildingName:visible input").val(),
+            postal_code: $("#postalCode:visible input").val(),
+        }).done(function(data) {
+            $("#keyword-address").val("");
+            getAddresses("");
+            alert(data);
+        }).fail(function(error) {
+            console.log(error.responseJSON.errors);
+            console.log("Error!");
+        });
     });
 
     $("#deliveryShippingButton").on('click', function() {
