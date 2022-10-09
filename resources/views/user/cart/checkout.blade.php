@@ -43,7 +43,7 @@ Checkout - Big V
                     <div id="deliveryShippingDetail">
                         <h4 class="heading-6 margin-vertical margin-small">Select Delivery Address</h4>
                         <div class="delivery-add-item">
-                            <div>
+                            <div id="deliveryAddressData">
                                 <h4 class="heading-7">Neilson Soeratman</h4>
                                 <div class="text-size-small">082337363440</div>
                                 <div class="text-size-small">
@@ -64,7 +64,7 @@ Checkout - Big V
                             <div id="shippingAddress" style="display: none;">
                                 <div class="div-line"></div>
                                 <div class="div-block-26">
-                                    <div>
+                                    <div id="shippingAddressData">
                                         <h4 class="heading-7">Neilson Soeratman</h4>
                                         <div class="text-size-small">082337363440</div>
                                         <div class="text-size-small">
@@ -73,7 +73,7 @@ Checkout - Big V
                                             Singapore [Postal Code]
                                         </div>
                                     </div>
-                                    <button type="button" class="btn" data-toggle="modal" style="background: rgba(0,0,0,0); box-shadow: none !important;" data-target=".addressModal">
+                                    <button type="button" class="btn" data-toggle="modal" style="background: rgba(0,0,0,0); box-shadow: none !important;" data-target=".shippingAddressModal">
                                         <img src="{{asset('assets/630b9533cf47ce568d633011_pencil.svg')}}" loading="lazy" alt="" class="image-21 cursor-pointer" />
                                     </button>
                                 </div>
@@ -221,10 +221,10 @@ Checkout - Big V
                         <p class="m-0 color-custom-gray">Add New Address</p>
                     </div>
                     <div id="list-address" class="d-flex flex-column modal-list-container">
-                        @include('user.cart.itemAddressCheckout')
+                        @include('user.cart.itemDeliveryAddressCheckout')
                     </div>
                 </div>
-                <div id="shippingNewAddress" class="d-none">
+                <div class="shipping-new-address d-none">
                     <div class="mb-3" id="name">
                         <h5 class="text-color-dark-grey mb-1">Name</h5>
                         <input type="text" class="text-field-2 w-input form-control" placeholder="Name">
@@ -266,7 +266,107 @@ Checkout - Big V
                         </div>
                         <div class="mb-3" id="streetName">
                             <h5 class="text-color-dark-grey mb-1">Street Name</h5>
-                            <input type="text" class="text-field-2 w-input form-control" placeholder="Street Number">
+                            <input type="text" class="text-field-2 w-input form-control" placeholder="Street Name">
+                            <div class="invalid-feedback"></div>   
+                        </div>
+                        <div class="mb-3" id="unitLevel">
+                            <h5 class="text-color-dark-grey mb-1">Unit Level</h5>
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Unit Level">
+                            <div class="invalid-feedback"></div>   
+                        </div>
+                        <div class="mb-3" id="unitNumber">
+                            <h5 class="text-color-dark-grey mb-1">Unit Number</h5>
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Unit Number">
+                            <div class="invalid-feedback"></div>   
+                        </div>
+                        <div class="mb-3" id="buildingName">
+                            <h5 class="text-color-dark-grey mb-1">Building Name</h5>
+                            <input type="text" class="text-field-2 w-input form-control" placeholder="Building Name">
+                            <div class="invalid-feedback"></div>   
+                        </div>
+                        <div class="mb-3" id="postalCode">
+                            <h5 class="text-color-dark-grey mb-1">Postal Code</h5>
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Postal Code">
+                            <div class="invalid-feedback"></div>   
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end" style="gap: 10px;">
+                        <button id="btn-create-address" class="pr-4 pl-4 checkout-button w-button">Save</button>
+                        <a href="#" class="pr-4 pl-4 checkout-button w-button bg-secondary" id="cancelAddNewAddressShipping">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade shippingAddressModal" tabindex="-1" role="dialog" aria-labelledby="shippingAddressModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content br-27">
+            <div class="modal-header">
+                <h4 class="modal-title h4 ml-2" id="shippingAddressModal">Choose Address</h4>
+                <button id="btn-close-address" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="shippingAddressList">
+                    <div class="d-flex justify-content-between m-2">
+                        <div class="form-block-3 w-form">
+                            <input id="keyword-address" type="text" name="keyword_address" class="text-field-2 w-input" maxlength="256" placeholder="Search address">
+                        </div>
+                        <button id="btn-search-address" type="button" class="search-modal" tabindex="0">Search</a>
+                    </div>
+                    <div class="div-line ml-3 mr-3"></div>
+                    <div class="custom-button d-flex justify-content-center p-3 cursor-pointer mr-2 ml-2 mb-3" id="addNewAddressShipping">
+                        <p class="m-0 color-custom-gray">Add New Address</p>
+                    </div>
+                    <div id="shipping-list-address" class="d-flex flex-column modal-list-container">
+                        @include('user.cart.itemShippingAddressCheckout')
+                    </div>
+                </div>
+                <div class="shipping-new-address d-none">
+                    <div class="mb-3" id="name">
+                        <h5 class="text-color-dark-grey mb-1">Name</h5>
+                        <input type="text" class="text-field-2 w-input form-control" placeholder="Name">
+                        <div class="invalid-feedback"></div>                    
+                    </div>
+                    <div class="mb-3" id="phoneNumber">
+                        <h5 class="text-color-dark-grey mb-1">Phone Number</h5>
+                        <input type="text" class="text-field-2 w-input form-control" placeholder="Phone Number">
+                        <div class="invalid-feedback"></div>   
+                    </div>
+                    <div class="mb-3" id="additionalInformation">
+                        <h5 class="text-color-dark-grey mb-1">Additional Information</h5>
+                        <textarea class="text-field-2 w-input form-control" placeholder="Additional Information"></textarea>
+                        <div class="invalid-feedback"></div>   
+                    </div>
+                    <div class="div-line"></div>
+                    <h5 class="text-color-dark-grey mb-1">Address Format Type</h5>
+                    <div class="d-flex mb-3" style="gap: 10px;">
+                        <a href="#" class="address-new-button address-new-button-active w-inline-block" id="newAddressBuilding">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022zM6 8.694 1 10.36V15h5V8.694zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15z"/>
+                                <path d="M2 11h1v1H2v-1zm2 0h1v1H4v-1zm-2 2h1v1H2v-1zm2 0h1v1H4v-1zm4-4h1v1H8V9zm2 0h1v1h-1V9zm-2 2h1v1H8v-1zm2 0h1v1h-1v-1zm2-2h1v1h-1V9zm0 2h1v1h-1v-1zM8 7h1v1H8V7zm2 0h1v1h-1V7zm2 0h1v1h-1V7zM8 5h1v1H8V5zm2 0h1v1h-1V5zm2 0h1v1h-1V5zm0-2h1v1h-1V3z"/>
+                            </svg>
+                            <div class="text-size-small">Building</div>
+                        </a>
+                        <a href="#" class="address-new-button w-inline-block" id="newAddressProperties">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                                <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+                            </svg>
+                            <div class="text-size-small">Landed Properties</div>
+                        </a>
+                    </div>
+                    <div>
+                        <div class="mb-3" id="blockNumber">
+                            <h5 class="text-color-dark-grey mb-1">Block Number</h5>
+                            <input type="number" class="text-field-2 w-input form-control" placeholder="Block Number">
+                            <div class="invalid-feedback"></div>   
+                        </div>
+                        <div class="mb-3" id="streetName">
+                            <h5 class="text-color-dark-grey mb-1">Street Name</h5>
+                            <input type="text" class="text-field-2 w-input form-control" placeholder="Street Name">
                             <div class="invalid-feedback"></div>   
                         </div>
                         <div class="mb-3" id="unitLevel">
@@ -348,15 +448,20 @@ Checkout - Big V
 @section('javascript-extra')
 <script src="{{asset('assets/js/script-cart-checkout.js')}}" type="text/javascript"></script>
 <script>
-    function getAddresses(keyword) {
+    function getAddresses(keyword, el) {
         $.post(url + "/user/user-address/search", {
             _token: CSRF_TOKEN,
             keyword: keyword,
         }).done(function(data) {
-            $("#list-address").html(data);
+            el.html(data);
         }).fail(function() {
             console.log("Error!");
         });
+    }
+
+    function clearInput() {
+        $("input, textarea").val("").removeClass("is-invalid");
+        $(".invalid-feedback").html("");
     }
 </script>
 <script>
@@ -393,11 +498,31 @@ Checkout - Big V
             postal_code: $("#postalCode:visible input").val(),
         }).done(function(data) {
             $("#keyword-address").val("");
+            $("#shippingAddressList").removeClass("d-none");
+            $(".shipping-new-address").addClass("d-none");
+            
             getAddresses("");
+            clearInput();
+            
             alert(data);
         }).fail(function(error) {
-            console.log(error.responseJSON.errors);
-            console.log("Error!");
+            var errorObj = error.responseJSON.errors;
+            var keys = Object.keys(errorObj);
+
+            keys.forEach((key) => {
+                var elementID = "name";
+                if (key == "phone") elementID = "phoneNumber";
+                else if (key == "additional_info") elementID = "additionalInformation";
+                else if (key == "block_number") elementID = "blockNumber";
+                else if (key == "street") elementID = "streetName";
+                else if (key == "unit_level") elementID = "unitLevel";
+                else if (key == "unit_number") elementID = "unitNumber";
+                else if (key == "building_name") elementID = "buildingName";
+                else if (key == "postal_code") elementID = "postalCode";
+                
+                $("#" + elementID +" input").addClass("is-invalid");
+                $("#" + elementID +" .invalid-feedback").html(errorObj[key]);
+            });
         });
     });
 
@@ -428,11 +553,42 @@ Checkout - Big V
         $(this).addClass("payment-gateway-button-active");
     });
 
-    $(".address-button").on('click', function() {
-        $(".address-button").removeClass("address-button-active");
-        $(this).addClass("address-button-active");
-    });
+    $(".address-button, .shipping-address-button").on('click', function() {
+        var el = $(this).hasClass("address-button") ? $("#deliveryAddressData") : $("#shippingAddressData");
+        
+        $.get(url + "/user/user-address/get-address/" + $(this).attr("address-id")).done(function(data) {
+                if (data.block_number) {
+                    el.html(`
+                        <h4 class="heading-7">` + data.name + `</h4>
+                        <div class="text-size-small">` + data.phone + `</div>
+                        <div class="text-size-small">
+                            ` + data.block_number + ` ` + data.street + ` <br>
+                            #` + data.unit_level + `-` + data.unit_number + ` ` + data.building_name + ` <br>
+                            Singapore ` + data.postal_code + `
+                        </div>`);
+                } else {
+                    el.html(`
+                        <h4 class="heading-7">` + data.name + `</h4>
+                        <div class="text-size-small">` + data.phone + `</div>
+                        <div class="text-size-small">
+                            ` + data.unit_number + ` ` + data.street + ` <br>
+                            Singapore ` + data.postal_code + `
+                        </div>`);
+                }
+                
+            }).fail(function() {
+                console.log("Error get user address!");
+            });
 
+        if ($(this).hasClass("address-button")) {
+            $(".address-button").removeClass("address-button-active");
+            $(this).addClass("address-button-active");
+        } else {
+            $(".shipping-address-button").removeClass("address-button-active");
+            $(this).addClass("address-button-active");
+        }
+    });
+    
     $(".pickup-address-button").on('click', function() {
         $(".pickup-address-button").removeClass("pickup-address-button-active");
         $(this).addClass("pickup-address-button-active");
@@ -491,12 +647,12 @@ Checkout - Big V
 
     $("#addNewAddressShipping").on("click", function(){
         $("#shippingAddressList").addClass("d-none");
-        $("#shippingNewAddress").removeClass("d-none");
+        $(".shipping-new-address").removeClass("d-none");
     });
 
     $("#cancelAddNewAddressShipping").on("click", function(){
         $("#shippingAddressList").removeClass("d-none");
-        $("#shippingNewAddress").addClass("d-none");
+        $(".shipping-new-address").addClass("d-none");
     });
 
     $("#newAddressBuilding").on("click", function(){

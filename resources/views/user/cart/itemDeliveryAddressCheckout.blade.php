@@ -1,5 +1,5 @@
 @foreach ($addresses as $address) 
-    <div class="delivery-add-item w-auto mr-2 ml-2 flex-column align-items-start address-button cursor-pointer">
+    <div address-id={{ $address->id }} class="delivery-add-item w-auto mr-2 ml-2 flex-column align-items-start address-button cursor-pointer" data-dismiss="modal">
         <h4 class="heading-7">{{ $address->name }}</h4>
         <div class="text-size-small">{{ $address->phone }}</div>
         <div class="text-size-small">

@@ -162,4 +162,9 @@ class UserAddressController extends Controller
 
         return 'New Address created successfully.';
     }
+
+    public function getAddressAJAX(UserAddress $userAddress)
+    {
+        return $userAddress;
+    }
 }

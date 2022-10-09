@@ -76,6 +76,7 @@ Route::group(['middleware' => ['user', 'verified'], 'as' => 'user.', 'prefix' =>
     Route::resource('transaction-discount', TransactionDiscountController::class);
     Route::resource('transaction-status', TransactionStatusController::class);
     Route::post('user-address/create-address', [UserAddressController::class, 'createAddressAJAX']);
+    Route::get('user-address/get-address/{user_address}', [UserAddressController::class, 'getAddressAJAX']);
     Route::post('user-address/search', [UserAddressController::class, 'search']);
     Route::resource('user-address', UserAddressController::class);
     Route::resource('user-role', UserRoleController::class);
