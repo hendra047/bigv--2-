@@ -23,6 +23,7 @@ class DiscountSeeder extends Seeder
         $temp->duration_start = "2022-08-18 10:12:37";
         $temp->duration_end = "2022-09-18 10:12:37";
         $temp->type_id = "3";
+        $temp->discount_applicable_id = "1";
         $temp->save();
 
         $temp = new Discount();
