@@ -16,14 +16,24 @@ class DiscountSeeder extends Seeder
     public function run()
     {
         $temp = new Discount();
-        $temp->name = "Merdeka Discount";
+        $temp->name = "Merdeka Discount 80%";
         $temp->code = "a";
+        $temp->amount = "5";
+        $temp->min_tier_points = "200";
+        $temp->duration_start = "2022-08-18 10:12:37";
+        $temp->duration_end = "2022-09-18 10:12:37";
+        $temp->type_id = "3";
+        $temp->save();
+
+        $temp = new Discount();
+        $temp->name = "Merdeka Discount 30%";
+        $temp->code = "c";
         $temp->amount = "5";
         $temp->min_tier_points = "21";
         $temp->duration_start = "2022-08-18 10:12:37";
         $temp->duration_end = "2022-09-18 10:12:37";
         $temp->type_id = "3";
-        $temp->discount_applicable_id = "1";
+        $temp->is_visible = "1";
         $temp->save();
 
         $temp = new Discount();

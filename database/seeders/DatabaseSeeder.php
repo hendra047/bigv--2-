@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PickupTimeSeeder::class);
 
         $this->call(DiscountSeeder::class);
+        $this->call(VariationDiscountSeeder::class);
         $this->call(TransactionSeeder::class);
         $this->call(TransactionDiscountSeeder::class);
         $this->call(AddonSeeder::class);

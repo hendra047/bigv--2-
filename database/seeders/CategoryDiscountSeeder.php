@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\DiscountApplicable;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DiscountApplicableSeeder extends Seeder
+class CategoryDiscountSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,8 +14,6 @@ class DiscountApplicableSeeder extends Seeder
      */
     public function run()
     {
-        $temp = new DiscountApplicable();
-        $temp->name = "Coba";
-        $temp->save();
+        //
     }
 }

@@ -83,4 +83,14 @@ class DiscountController extends Controller
     {
         //
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->keyword;
+        $discounts = Discount::all();
+
+        if (isset($keyword)) {
+            $discounts = Discount::where('code', $keyword)->get();
+        }
+    }
 }
