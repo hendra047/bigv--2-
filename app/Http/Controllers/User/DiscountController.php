@@ -92,5 +92,7 @@ class DiscountController extends Controller
         if (isset($keyword)) {
             $discounts = Discount::where('code', $keyword)->get();
         }
+
+        return view('user.cart.itemDiscountCheckout', ['discounts' => $discounts]);
     }
 }

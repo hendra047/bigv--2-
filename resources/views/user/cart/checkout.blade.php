@@ -150,7 +150,7 @@ Checkout - Big V
             <div class="sticky-summary flex-shrink-0 flex-grow-0 w-50">
                 <form method="POST" action="" class="cart-summary">
                     <h4 class="text-color-dark-grey">Discount</h4>
-                    <div class="div-block-28" data-toggle="modal" data-target=".discountModal">
+                    <div id="btnSelectDiscount" class="div-block-28" data-toggle="modal" data-target="#discountModal">
                         <div class="dropdown-toggle w-dropdown-toggle">
                             <img src="{{asset('assets/6312035b7fb097b080627244_discount icon.svg')}}" loading="lazy" alt="" />
                             <div class="text-block-3 text-color-dark-grey">Apply Discount</div>
@@ -298,11 +298,11 @@ Checkout - Big V
     </div>
 </div>
 
-<div class="modal fade discountModal" tabindex="-1" role="dialog" aria-labelledby="discountModal" aria-hidden="true">
+<div id="discountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="discountModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content br-27">
             <div class="modal-header">
-                <h4 class="modal-title h4 ml-2" id="discountModal">Choose Discount</h4>
+                <h4 class="modal-title h4 ml-2">Choose Discount</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">x</span>
                 </button>
@@ -315,25 +315,9 @@ Checkout - Big V
                     <a href="#" class="search-modal" tabindex="0">Search</a>
                 </div>
                 <div class="div-line ml-3 mr-3"></div>
-                <h4 class="heading-7 ml-2 mb-3">Product Discount Voucher</h4>
-                <div class="d-flex flex-column modal-list-container-2">
-                    @for ($i = 0; $i < 10; $i++) 
-                    <div class="delivery-add-item w-auto mr-2 ml-2 flex-column align-items-start product-discount-button cursor-pointer">
-                        <h4 class="heading-7">BIGVDISCOUNT40</h4>
-                        <div class="text-size-small">40% off product sale</div>
-                    </div>
-                    @endfor
-                </div>
-                <div class="div-line ml-3 mr-3"></div>
-                <h4 class="heading-7 ml-2 mb-3">Shipping Discount Voucher</h4>
-                <div class="d-flex flex-column modal-list-container-2">
-                    @for ($i = 0; $i < 10; $i++) 
-                    <div class="delivery-add-item w-auto mr-2 ml-2 flex-column align-items-start shipping-discount-button cursor-pointer">
-                        <h4 class="heading-7">SHIPPING4</h4>
-                        <div class="text-size-small">$4 off shipping cost</div>
-                    </div>
-                    @endfor
-                </div>
+
+                <div id="containerVoucher"></div>
+
                 <div class="d-flex justify-content-end mt-3" style="gap: 10px;">
                     <a href="#" class="pr-4 pl-4 checkout-button w-button">Apply</a>
                     <a href="#" class="pr-4 pl-4 checkout-button w-button bg-secondary" data-dismiss="modal" aria-label="Close">Cancel</a>
@@ -349,6 +333,17 @@ Checkout - Big V
 <script>
     function getAddresses(keyword, el) {
         $.post(url + "/user/user-address/search", {
+            _token: CSRF_TOKEN,
+            keyword: keyword,
+        }).done(function(data) {
+            el.html(data);
+        }).fail(function() {
+            console.log("Error!");
+        });
+    }
+
+    function getDiscounts(keyword, el) {
+        $.post(url + "/user/discount/search", {
             _token: CSRF_TOKEN,
             keyword: keyword,
         }).done(function(data) {
@@ -453,6 +448,10 @@ Checkout - Big V
         $(this).find(".shipping-icon").attr("fill", "#ffffff");
     });
 
+    $("#btnSelectDiscount").on("click", function() {
+        getDiscounts
+    });
+
     $(".time-button").on('click', function() {
         $(".time-button").removeClass("time-button-active");
         $(this).addClass("time-button-active");
@@ -467,16 +466,6 @@ Checkout - Big V
     $(".pickup-address-button").on('click', function() {
         $(".pickup-address-button").removeClass("pickup-address-button-active");
         $(this).addClass("pickup-address-button-active");
-    });
-
-    $(".product-discount-button").on('click', function() {
-        $(".product-discount-button").removeClass("product-discount-button-active");
-        $(this).addClass("product-discount-button-active");
-    });
-
-    $(".shipping-discount-button").on('click', function() {
-        $(".shipping-discount-button").removeClass("shipping-discount-button-active");
-        $(this).addClass("shipping-discount-button-active");
     });
 
     var shippingAddress = false;
