@@ -84,15 +84,37 @@ class DiscountController extends Controller
         //
     }
 
-    public function search(Request $request)
+    public function search($keyword = null)
     {
-        $keyword = $request->keyword;
-        $discounts = Discount::all();
+        $productDiscounts = Discount::where('type_id', '2')->orWhere('type_id', '3');
+        $shippingDiscounts = Discount::where('type_id', '1');
 
         if (isset($keyword)) {
-            $discounts = Discount::where('code', $keyword)->get();
+            $productDiscounts->where('code', $keyword);
+            $shippingDiscounts->where('code', $keyword);
         }
 
-        return view('user.cart.itemDiscountCheckout', ['discounts' => $discounts]);
+        $productDiscounts = $productDiscounts->get();
+        $shippingDiscounts = $shippingDiscounts->get();
+
+        return view('user.cart.itemDiscountCheckout', [
+            'product_discounts' => $productDiscounts,
+            'shipping_discounts' => $shippingDiscounts,
+        ]);
+    }
+
+    public function applyVoucher(Request $request)
+    {
+        $productVoucher = $request->product_voucher;
+        $shippingVoucher = $request->shipping_voucher;
+
+        if (isset($productVoucher)) {
+            $voucher = Discount::where('code', $productVoucher)->first();
+            dd($voucher);
+        }
+
+        if (isset($shippingVoucher)) {
+            $voucher = Discount::where('code', $shippingVoucher)->first();
+        }
     }
 }

@@ -150,7 +150,7 @@ Checkout - Big V
             <div class="sticky-summary flex-shrink-0 flex-grow-0 w-50">
                 <form method="POST" action="" class="cart-summary">
                     <h4 class="text-color-dark-grey">Discount</h4>
-                    <div id="btnSelectDiscount" class="div-block-28" data-toggle="modal" data-target="#discountModal">
+                    <div id="btnSelectDiscount" class="div-block-28" data-toggle="modal" data-target="">
                         <div class="dropdown-toggle w-dropdown-toggle">
                             <img src="{{asset('assets/6312035b7fb097b080627244_discount icon.svg')}}" loading="lazy" alt="" />
                             <div class="text-block-3 text-color-dark-grey">Apply Discount</div>
@@ -164,11 +164,11 @@ Checkout - Big V
                     </div>
                     <div class="div-block-24 text-color-grey">
                         <div class="inline">Shipping Price</div>
-                        <div class="inline">$30</div>
+                        <div class="inline">- $<span id="shippingPrice">0</span></div>
                     </div>
                     <div class="div-block-24 text-color-grey">
                         <div class="inline">Discounts</div>
-                        <div class="inline">- $3</div>
+                        <div class="inline">- $<span id="discountPrice">0</span></div>
                     </div>
                     <div class="div-line-sumarry"></div>
                     <div class="div-block-24 text-color-dark-grey">
@@ -197,8 +197,8 @@ Checkout - Big V
         </div>
         <img src="{{asset('assets/6303b67a5064f05035c5a701_shape 1.svg')}}" loading="lazy" alt="" class="absolute shape-cart" />
     </div>
-    
 </div>
+
 <div id="addressModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addressModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content br-27">
@@ -319,8 +319,8 @@ Checkout - Big V
                 <div id="containerVoucher"></div>
 
                 <div class="d-flex justify-content-end mt-3" style="gap: 10px;">
-                    <a href="#" class="pr-4 pl-4 checkout-button w-button">Apply</a>
-                    <a href="#" class="pr-4 pl-4 checkout-button w-button bg-secondary" data-dismiss="modal" aria-label="Close">Cancel</a>
+                    <button id="btnApplyDiscount" type="button" class="pr-4 pl-4 checkout-button w-button">Apply</button>
+                    <button type="button" class="pr-4 pl-4 checkout-button w-button bg-secondary" data-dismiss="modal" aria-label="Close">Cancel</button>
                 </div>
             </div>
         </div>
@@ -342,12 +342,10 @@ Checkout - Big V
         });
     }
 
-    function getDiscounts(keyword, el) {
-        $.post(url + "/user/discount/search", {
-            _token: CSRF_TOKEN,
-            keyword: keyword,
-        }).done(function(data) {
-            el.html(data);
+    function getDiscounts(keyword) {
+        var urlDiscount = keyword == "" ? (url + "/user/discount/search") : (url + "/user/discount/search/" + keyword);
+        $.get(urlDiscount).done(function(data) {
+            $("#containerVoucher").html(data);
         }).fail(function() {
             console.log("Error!");
         });
@@ -360,6 +358,10 @@ Checkout - Big V
 </script>
 <script>
     var editAddress = "", pickupTime = "AM";
+
+    $(document).ready(function() {
+        $("#btnSelectDiscount").attr("data-target", "#discountModal");
+    });
 
     $(document).on("click", ".quantity-change", function() {
         var qty = $(this).parent().find(".product-quantity");
@@ -449,7 +451,19 @@ Checkout - Big V
     });
 
     $("#btnSelectDiscount").on("click", function() {
-        getDiscounts
+        getDiscounts("");
+    });
+
+    $("#btnApplyDiscount").on("click", function() {
+        if ($("#productVoucher").attr("code") != "" && $("#shippingVoucher").attr("code") != "") {
+            $.post("", {
+                
+            }).done(function(data) {
+
+            }).fail(function(error) {
+
+            });
+        }
     });
 
     $(".time-button").on('click', function() {

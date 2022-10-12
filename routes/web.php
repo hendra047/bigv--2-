@@ -65,6 +65,9 @@ Route::group(['middleware' => ['user', 'verified'], 'as' => 'user.', 'prefix' =>
     Route::post('cart/verify-checkout', [CheckoutController::class, 'verifyCheckout']);
     Route::get('cart/checkout', [CheckoutController::class, 'getCheckout']);
     Route::resource('cart', CartController::class);
+    // Route::get('discount/search', [DiscountController::class, 'search']);
+    Route::get('discount/search/{keyword?}', [DiscountController::class, 'search']);
+    Route::post('discount/apply-voucher', [DiscountController::class, 'applyVoucher']);
     Route::resource('discount', DiscountController::class);
     Route::resource('payment-method', PaymentMethodController::class);
     Route::resource('pickup-method', PickupMethodController::class);
