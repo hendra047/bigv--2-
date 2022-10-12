@@ -456,10 +456,12 @@ Checkout - Big V
 
     $("#btnApplyDiscount").on("click", function() {
         if ($("#productVoucher").attr("code") != "" && $("#shippingVoucher").attr("code") != "") {
-            $.post("", {
-                
+            $.post(url + "/user/discount/apply-voucher", {
+                _token: CSRF_TOKEN,
+                product_voucher: $("#productVoucher").attr("selected-voucher"),
+                shipping_voucher: $("#shippingVoucher").attr("selected-voucher"),
             }).done(function(data) {
-
+                console.log(data);
             }).fail(function(error) {
 
             });

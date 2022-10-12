@@ -110,11 +110,20 @@ class DiscountController extends Controller
 
         if (isset($productVoucher)) {
             $voucher = Discount::where('code', $productVoucher)->first();
-            dd($voucher);
+
+            if (isset($voucher)) {
+                session()->put('product-voucher-used', $voucher);
+                session()->save();
+            }
         }
 
         if (isset($shippingVoucher)) {
             $voucher = Discount::where('code', $shippingVoucher)->first();
+
+            if (isset($voucher)) {
+                session()->put('shipping-voucher-used', $voucher);
+                session()->save();
+            }
         }
     }
 }
