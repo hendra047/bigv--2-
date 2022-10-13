@@ -26,13 +26,13 @@
         $(".product-discount-button").removeClass("product-discount-button-active");
         $(this).addClass("product-discount-button-active");
 
-        $(this).parent().attr("selected-code", $(this).attr("code"));
+        $(this).parent().attr("selected-voucher", $(this).attr("code"));
     });
     
     $(".shipping-discount-button").on('click', function() {
         $(".shipping-discount-button").removeClass("shipping-discount-button-active");
         $(this).addClass("shipping-discount-button-active");
         
-        $(this).parent().attr("selected-code", $(this).attr("code"));
+        $(this).parent().attr("selected-voucher", $(this).attr("code"));
     });
 </script>
