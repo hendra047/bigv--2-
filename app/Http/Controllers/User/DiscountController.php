@@ -105,6 +105,10 @@ class DiscountController extends Controller
 
     public function applyVoucher(Request $request)
     {
+        session()->forget('product-voucher-used');
+        session()->forget('shipping-voucher-used');
+        session()->save();
+
         $productVoucher = $request->product_voucher;
         $shippingVoucher = $request->shipping_voucher;
         $output = [];

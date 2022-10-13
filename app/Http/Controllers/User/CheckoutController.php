@@ -14,6 +14,10 @@ class CheckoutController extends Controller
     {
         if (session()->has('checkout-items') && session()->has('total-checkout-price') && session()->has('total-checkout-items')) {
             $addresses = UserAddress::where('user_id', auth()->user()->id)->get();
+            $shipping_price = 30;
+            $total_price = session()->get('total-checkout-price');
+
+            session()->put('total-checkout-price', $total_price + $shipping_price);
 
             $checkout_items = Vendor::with(['products' => function ($q1) {
                 $q1->select('vendor_id', 'carts.id as cart_id', 'products.featured_image', 'products.name as product_name', 'product_variations.name as product_variation_name', 'carts.price', 'carts.quantity', 'carts.user_id')
@@ -34,8 +38,10 @@ class CheckoutController extends Controller
             return view('user.cart.checkout', [
                 'addresses' => $addresses,
                 'checkouts' => $checkout_items,
-                'total_price' => session()->get('total-checkout-price'),
+                'total_price' => $total_price,
                 'total_items' => session()->get('total-checkout-items'),
+                'shipping_price' => $shipping_price,
+                'grandtotal_price' => $total_price + $shipping_price,
             ]);
         }
 

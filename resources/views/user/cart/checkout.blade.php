@@ -182,9 +182,9 @@ Checkout - Big V
                         <div class="inline">Total Price ({{ $total_items }} items)</div>
                         <div class="inline">${{ $total_price }}</div>
                     </div>
-                    <div class="div-block-24 text-color-grey d-none">
+                    <div class="div-block-24 text-color-grey">
                         <div class="inline">Shipping Price</div>
-                        <div class="inline">- $<span>{{ $shipping_price }}</span></div>
+                        <div class="inline">${{ $shipping_price }}</div>
                     </div>
                     <div id="shippingDiscountUsed" class="div-block-24 text-color-grey d-none">
                         <div class="inline">Shipping Discount Price</div>
@@ -192,12 +192,12 @@ Checkout - Big V
                     </div>
                     <div id="productDiscountUsed" class="div-block-24 text-color-grey d-none">
                         <div class="inline">Discounts</div>
-                        <div class="inline">- $<span id="productDiscountPrice">{{ $total_price }}</span></div>
+                        <div class="inline">- $<span id="productDiscountPrice">0</span></div>
                     </div>
                     <div class="div-line-sumarry"></div>
                     <div class="div-block-24 text-color-dark-grey">
                         <div class="inline text-weight-bold">Total</div>
-                        <div class="inline text-weight-bold">$<span id="grandtotal-price">0</span></div>
+                        <div class="inline text-weight-bold">$<span id="grandtotal-price">{{ $grandtotal_price }}</span></div>
                     </div><a href="#" class="checkout-button oh-grow w-button">Place Order</a>
                     <a href="#" class="payment-gateway-button w-inline-block">
                         <div class="text-weight-bold">HitPay Payment Gateway</div><img src="{{asset('assets/6312dbbdcf1b3f0de3362511_Hitpay.png')}}" loading="lazy" alt="" />
@@ -479,20 +479,26 @@ Checkout - Big V
     });
 
     $("#btnApplyDiscount").on("click", function() {
-        if ($("#productVoucher").attr("selected-code") != "" && $("#shippingVoucher").attr("selected-code") != "") {
+        if ($("#productVoucher").attr("selected-voucher") != "" && $("#shippingVoucher").attr("selected-voucher") != "") {
             $.post(url + "/user/discount/apply-voucher", {
                 _token: CSRF_TOKEN,
-                product_voucher: $("#productVoucher").attr("selected-code"),
-                shipping_voucher: $("#shippingVoucher").attr("selected-code"),
+                product_voucher: $("#productVoucher").attr("selected-voucher"),
+                shipping_voucher: $("#shippingVoucher").attr("selected-voucher"),
             }).done(function(data) {
-                $("#applyVoucher").addClass("d-none").next().addClass("d-none");
-                $("#voucherUsed").html(data.product_voucher.name).removeClass("d-none").next().removeClass("d-none");
-                if (data.product_voucher) {
+                console.log(data);
+                if (data.product_voucher !== undefined) {
+                    $("#applyVoucher").addClass("d-none").next().addClass("d-none");
+                    $("#voucherUsed").html(data.product_voucher.name).removeClass("d-none").next().removeClass("d-none");
                     $("#productDiscountUsed").removeClass("d-none");
                     $("#productDiscountPrice").html(data.product_voucher.amount);
+                } else {
+                    $("#applyVoucher").removeClass("d-none").next().removeClass("d-none");
+                    $("#voucherUsed").html("").addClass("d-none").next().addClass("d-none");
+                    $("#productDiscountUsed").addClass("d-none");
+                    $("#productDiscountPrice").html("0");
                 }
 
-                if (data.shipping_voucher) {
+                if (data.shipping_voucher !== undefined) {
                     $("#shippingDiscountUsed").removeClass("d-none");
                     $("#shippingDiscountPrice").html(data.shipping_voucher.amount);
                 }
