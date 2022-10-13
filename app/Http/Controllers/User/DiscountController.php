@@ -107,14 +107,29 @@ class DiscountController extends Controller
     {
         $productVoucher = $request->product_voucher;
         $shippingVoucher = $request->shipping_voucher;
+        $output = [];
+        $totalPrice = session()->get('total-checkout-price');
 
         if (isset($productVoucher)) {
             $voucher = Discount::where('code', $productVoucher)->first();
-            dd($voucher);
+            $output['product_voucher'] = $voucher;
+            $totalPrice -= $voucher->amount;
+
+            session()->put('product-voucher-used', $voucher);
+            session()->save();
         }
 
         if (isset($shippingVoucher)) {
             $voucher = Discount::where('code', $shippingVoucher)->first();
+            $output['shipping_voucher'] = $voucher;
+            $totalPrice -= $voucher->amount;
+
+            session()->put('shipping-voucher-used', $voucher);
+            session()->save();
         }
+
+        $output["total_price_after_discount"] = $totalPrice;
+
+        return $output;
     }
 }

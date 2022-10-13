@@ -10,6 +10,24 @@ Checkout - Big V
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<style>
+    .w-icon-close-toggle {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        margin-right: 20px;
+        width: 1em;
+        height: 1em;
+    }
+
+    .w-icon-close-toggle::before {
+        content: "\00d7";
+        font-size: 1.75rem;
+        line-height: 0.265;
+        font-weight: 700;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -153,8 +171,10 @@ Checkout - Big V
                     <div id="btnSelectDiscount" class="div-block-28" data-toggle="modal" data-target="">
                         <div class="dropdown-toggle w-dropdown-toggle">
                             <img src="{{asset('assets/6312035b7fb097b080627244_discount icon.svg')}}" loading="lazy" alt="" />
-                            <div class="text-block-3 text-color-dark-grey">Apply Discount</div>
+                            <div id="applyVoucher" class="text-block-3 text-color-dark-grey">Apply Discount</div>
                             <div class="icon-3 w-icon-dropdown-toggle"></div>
+                            <div id="voucherUsed" class="text-block-3 text-color-dark-grey d-none"></div>
+                            <div class="icon-3 w-icon-close-toggle d-none"></div>
                         </div>
                     </div>
                     <h4 class="heading-8 text-color-dark-grey">Summary</h4>
@@ -162,18 +182,22 @@ Checkout - Big V
                         <div class="inline">Total Price ({{ $total_items }} items)</div>
                         <div class="inline">${{ $total_price }}</div>
                     </div>
-                    <div class="div-block-24 text-color-grey">
+                    <div class="div-block-24 text-color-grey d-none">
                         <div class="inline">Shipping Price</div>
-                        <div class="inline">- $<span id="shippingPrice">0</span></div>
+                        <div class="inline">- $<span>{{ $shipping_price }}</span></div>
                     </div>
-                    <div class="div-block-24 text-color-grey">
+                    <div id="shippingDiscountUsed" class="div-block-24 text-color-grey d-none">
+                        <div class="inline">Shipping Discount Price</div>
+                        <div class="inline">- $<span id="shippingDiscountPrice">0</span></div>
+                    </div>
+                    <div id="productDiscountUsed" class="div-block-24 text-color-grey d-none">
                         <div class="inline">Discounts</div>
-                        <div class="inline">- $<span id="discountPrice">0</span></div>
+                        <div class="inline">- $<span id="productDiscountPrice">{{ $total_price }}</span></div>
                     </div>
                     <div class="div-line-sumarry"></div>
                     <div class="div-block-24 text-color-dark-grey">
                         <div class="inline text-weight-bold">Total</div>
-                        <div class="inline text-weight-bold">$0</div>
+                        <div class="inline text-weight-bold">$<span id="grandtotal-price">0</span></div>
                     </div><a href="#" class="checkout-button oh-grow w-button">Place Order</a>
                     <a href="#" class="payment-gateway-button w-inline-block">
                         <div class="text-weight-bold">HitPay Payment Gateway</div><img src="{{asset('assets/6312dbbdcf1b3f0de3362511_Hitpay.png')}}" loading="lazy" alt="" />
@@ -319,7 +343,7 @@ Checkout - Big V
                 <div id="containerVoucher"></div>
 
                 <div class="d-flex justify-content-end mt-3" style="gap: 10px;">
-                    <button id="btnApplyDiscount" type="button" class="pr-4 pl-4 checkout-button w-button">Apply</button>
+                    <button id="btnApplyDiscount" type="button" class="pr-4 pl-4 checkout-button w-button" data-dismiss="modal">Apply</button>
                     <button type="button" class="pr-4 pl-4 checkout-button w-button bg-secondary" data-dismiss="modal" aria-label="Close">Cancel</button>
                 </div>
             </div>
@@ -455,13 +479,26 @@ Checkout - Big V
     });
 
     $("#btnApplyDiscount").on("click", function() {
-        if ($("#productVoucher").attr("code") != "" && $("#shippingVoucher").attr("code") != "") {
-            $.post("", {
-                
+        if ($("#productVoucher").attr("selected-code") != "" && $("#shippingVoucher").attr("selected-code") != "") {
+            $.post(url + "/user/discount/apply-voucher", {
+                _token: CSRF_TOKEN,
+                product_voucher: $("#productVoucher").attr("selected-code"),
+                shipping_voucher: $("#shippingVoucher").attr("selected-code"),
             }).done(function(data) {
+                $("#applyVoucher").addClass("d-none").next().addClass("d-none");
+                $("#voucherUsed").html(data.product_voucher.name).removeClass("d-none").next().removeClass("d-none");
+                if (data.product_voucher) {
+                    $("#productDiscountUsed").removeClass("d-none");
+                    $("#productDiscountPrice").html(data.product_voucher.amount);
+                }
 
+                if (data.shipping_voucher) {
+                    $("#shippingDiscountUsed").removeClass("d-none");
+                    $("#shippingDiscountPrice").html(data.shipping_voucher.amount);
+                }
+                $("#grandtotal-price").html(data.total_price_after_discount);
             }).fail(function(error) {
-
+                console.log(error);
             });
         }
     });
