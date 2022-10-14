@@ -191,7 +191,7 @@ Checkout - Big V
                         <div class="inline">- $<span id="shippingDiscountPrice">0</span></div>
                     </div>
                     <div id="productDiscountUsed" class="div-block-24 text-color-grey d-none">
-                        <div class="inline">Discounts</div>
+                        <div class="inline">Discount Price</div>
                         <div class="inline">- $<span id="productDiscountPrice">0</span></div>
                     </div>
                     <div class="div-line-sumarry"></div>
@@ -501,7 +501,11 @@ Checkout - Big V
                 if (data.shipping_voucher !== undefined) {
                     $("#shippingDiscountUsed").removeClass("d-none");
                     $("#shippingDiscountPrice").html(data.shipping_voucher.amount);
+                } else {
+                    $("#shippingDiscountUsed").addClass("d-none");
+                    $("#shippingDiscountPrice").html("");
                 }
+
                 $("#grandtotal-price").html(data.total_price_after_discount);
             }).fail(function(error) {
                 console.log(error);
