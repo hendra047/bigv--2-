@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\UserRoleController as AdminUserRoleController;
 use App\Http\Controllers\Admin\UserTierController as AdminUserTierController;
 use App\Http\Controllers\Admin\VendorController as AdminVendorController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PickupAddressController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\DiscountController;
@@ -71,6 +72,7 @@ Route::group(['middleware' => ['user', 'verified'], 'as' => 'user.', 'prefix' =>
     Route::resource('discount', DiscountController::class);
     Route::resource('payment-method', PaymentMethodController::class);
     Route::resource('pickup-method', PickupMethodController::class);
+    Route::post('pickup-address/search', [PickupAddressController::class, 'search']);
     Route::resource('product-category', ProductCategoryController::class);
     Route::resource('product-image', ProductImageController::class);
     Route::resource('product-review', ProductReviewController::class);

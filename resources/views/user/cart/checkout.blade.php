@@ -100,18 +100,7 @@ Checkout - Big V
                     </div>
                     <div id="pickupShippingDetail" class="d-none">
                         <h4 class="heading-6 margin-vertical margin-small">Select Pickup Address</h4>
-                        <div class="d-flex flex-column">
-                            @for ($i = 0; $i < 4; $i++) 
-                            <div class="delivery-add-item w-auto flex-column align-items-start pickup-address-button cursor-pointer">
-                                <h4 class="heading-7">Big V North</h4>
-                                <div class="text-size-small">
-                                    [Block Number] [Street Name] <br>
-                                    #[Unit Level]-[Unit Number] [Building Name] <br>
-                                    Singapore [Postal Code]
-                                </div>
-                            </div>
-                            @endfor
-                        </div>
+                        <div class="container-address d-flex flex-column"></div>
                     </div>
                     <div class="div-line"></div>
                     <h4 class="heading-6 margin-vertical margin-small text-color-dark-grey">Shipping/Pickup Time</h4>
@@ -355,6 +344,36 @@ Checkout - Big V
 @section('javascript-extra')
 <script src="{{asset('assets/js/script-cart-checkout.js')}}" type="text/javascript"></script>
 <script>
+    function getDetailAddress(el, addressId, selected = false) {
+        $.get(url + "/user/user-address/get-address/" + addressId).done(function(data) {
+            if (data.block_number) {
+                el.html(`
+                    <h4 class="heading-7">` + data.name + `</h4>
+                    <div class="text-size-small">` + data.phone + `</div>
+                    <div class="text-size-small">
+                        ` + data.block_number + ` ` + data.street + ` <br>
+                        #` + data.unit_level + `-` + data.unit_number + ` ` + data.building_name + ` <br>
+                        Singapore ` + data.postal_code + `
+                    </div>`);
+            } else {
+                el.html(`
+                    <h4 class="heading-7">` + data.name + `</h4>
+                    <div class="text-size-small">` + data.phone + `</div>
+                    <div class="text-size-small">
+                        ` + data.unit_number + ` ` + data.street + ` <br>
+                        Singapore ` + data.postal_code + `
+                    </div>`);
+            }
+
+            if (selected != false)
+                el.attr("selected-address", addressId);
+            else
+                el.removeAttr("selected-address");
+        }).fail(function() {
+            console.log("Error get user address!");
+        });
+    }
+
     function getAddresses(keyword, el) {
         $.post(url + "/user/user-address/search", {
             _token: CSRF_TOKEN,
@@ -381,34 +400,40 @@ Checkout - Big V
     }
 </script>
 <script>
-    var editAddress = "", pickupTime = "AM";
+    var editAddress = $("#deliveryAddressData"), pickupTime = "AM";
 
     $(document).ready(function() {
+        // give target to button modal discount
         $("#btnSelectDiscount").attr("data-target", "#discountModal");
-    });
 
-    $(document).on("click", ".quantity-change", function() {
-        var qty = $(this).parent().find(".product-quantity");
-        if ($(this).attr("logic") == "add") {
-            qty.val(parseInt(qty.val()) + 1);
-        } else {
-            if (qty.val() != 1) qty.val(parseInt(qty.val()) - 1);
-        }
+        // load default delivery address
+        getDetailAddress($("#deliveryAddressData"), 1, true);
+        
+        // load default different delivery address
+        getDetailAddress($("#shippingAddressData"), 1);
     });
-     
+    
     $("#btnEditDeliveryAddress").on("click", function() {
-        editAddress = "#deliveryAddressData";
+        // set editAddress to accessor (#deliveryAddressData) when edit delivery address
+        editAddress = $("#deliveryAddressData");
+
+        // get list address for modal address
         getAddresses("", $("#listAddress"));
     });
 
     $("#btnEditShippingAddress").on("click", function() {
-        editAddress = "#shippingAddressData";
+        // set editAddress to accessor (#shippingAddressData) when edit another delivery address
+        editAddress = $("#shippingAddressData");
+
+        // get list address for modal address
         getAddresses("", $("#listAddress"));
     });
     
     $("#btnSearchAddress").on("click", function() {
         var keyword = $("#keywordAddress").val();
-        getAddresses(keyword);
+
+        // get list address for modal address based on "keyword"
+        getAddresses(keyword, $("#listAddress"));
     });
 
     $("#btnCloseAddress").on("click", function() {
@@ -428,13 +453,22 @@ Checkout - Big V
             building_name: $("#buildingName:visible input").val(),
             postal_code: $("#postalCode:visible input").val(),
         }).done(function(data) {
+            // clear keyword search address
             $("#keywordAddress").val("");
+
+            // clear list address
             $("#shippingAddressList").removeClass("d-none");
+            
+            // hide new address modal
             $(".shipping-new-address").addClass("d-none");
             
+            // get new list address
             getAddresses("", $("#listAddress"));
+            
+            // clear all input from new address modal
             clearInput();
             
+            // alert status create address fail or success
             alert(data);
         }).fail(function(error) {
             var errorObj = error.responseJSON.errors;
@@ -458,11 +492,25 @@ Checkout - Big V
     });
 
     $("#deliveryShippingButton").on('click', function() {
+        $("#pickupShippingDetail, #deliveryAddressData, #shippingAddressData").removeAttr("selected-address");
+        getDetailAddress($("#deliveryAddressData"), 1, true);
+        getDetailAddress($("#shippingAddressData"), 1);
+
         $("#deliveryShippingDetail").removeClass("d-none");
         $("#pickupShippingDetail").addClass("d-none");
     });
 
     $("#pickupShippingButton").on('click', function() {
+        $("#pickupShippingDetail, #deliveryAddressData, #shippingAddressData").removeAttr("selected-address");
+        $.post(url + "/user/pickup-address/search", {
+            _token: CSRF_TOKEN,
+            keyword: "",
+        }).done(function(data) {
+            $("#pickupShippingDetail .container-address").html(data);
+        }).fail(function(error) {
+            console.log("Error!")
+        });
+
         $("#deliveryShippingDetail").addClass("d-none");
         $("#pickupShippingDetail").removeClass("d-none");
     });
@@ -522,11 +570,6 @@ Checkout - Big V
     $(".payment-gateway-button").on('click', function() {
         $(".payment-gateway-button").removeClass("payment-gateway-button-active");
         $(this).addClass("payment-gateway-button-active");
-    });
-    
-    $(".pickup-address-button").on('click', function() {
-        $(".pickup-address-button").removeClass("pickup-address-button-active");
-        $(this).addClass("pickup-address-button-active");
     });
 
     var shippingAddress = false;

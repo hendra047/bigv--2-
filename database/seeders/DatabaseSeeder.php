@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserTierSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(UserAddressSeeder::class);
+        $this->call(PickupAddressSeeder::class);
         $this->call(PickupTimeSeeder::class);
 
         $this->call(DiscountSeeder::class);
