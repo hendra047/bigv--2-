@@ -34,26 +34,34 @@ Checkout - Big V
 <div class="content">
     <div class="max-width flex vertical">
         <h2 class="text-color-grey ea-top">Checkout</h2>
-        <div class="cart-wrapper w-100">
+        <form id="checkoutForm" method="POST" action="{{ url('user/cart/checkout/place-order') }}" class="cart-wrapper w-100">
+            @csrf
+
             <div class="vendors-column flex-shrink-0 flex-grow-0 w-50">
                 <div class="vendors-card">
                     <div>
                         <h4>Shipping Method</h4>
                         <div>
                             <div class="checkout-buttons">
-                                <a href="#" class="shipping-button shipping-button-active w-inline-block" id="deliveryShippingButton">
-                                    <svg width="33" height="33" viewBox="0 0 33 33" class="shipping-icon" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M26.125 9.625C26.125 8.1125 24.8875 6.875 23.375 6.875H19.25V9.625H23.375V13.2687L18.59 19.25H13.75V12.375H8.25C5.21125 12.375 2.75 14.8362 2.75 17.875V22H5.5C5.5 24.2825 7.3425 26.125 9.625 26.125C11.9075 26.125 13.75 24.2825 13.75 22H19.91L26.125 14.2313V9.625ZM9.625 23.375C8.86875 23.375 8.25 22.7563 8.25 22H11C11 22.7563 10.3812 23.375 9.625 23.375Z" />
-                                        <path d="M6.875 8.25H13.75V11H6.875V8.25ZM26.125 17.875C23.8425 17.875 22 19.7175 22 22C22 24.2825 23.8425 26.125 26.125 26.125C28.4075 26.125 30.25 24.2825 30.25 22C30.25 19.7175 28.4075 17.875 26.125 17.875ZM26.125 23.375C25.3687 23.375 24.75 22.7563 24.75 22C24.75 21.2437 25.3687 20.625 26.125 20.625C26.8813 20.625 27.5 21.2437 27.5 22C27.5 22.7563 26.8813 23.375 26.125 23.375Z" />
-                                    </svg>
-                                    <div class="text-size-small">Delivery</div>
-                                </a>
-                                <a href="#" class="shipping-button w-inline-block" id="pickupShippingButton">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" class="shipping-icon" fill="#444349" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 1.5C12.9946 1.5 13.9484 1.89509 14.6517 2.59835C15.3549 3.30161 15.75 4.25544 15.75 5.25V6H8.25V5.25C8.25 4.25544 8.64509 3.30161 9.34835 2.59835C10.0516 1.89509 11.0054 1.5 12 1.5ZM17.25 6V5.25C17.25 3.85761 16.6969 2.52226 15.7123 1.53769C14.7277 0.553123 13.3924 0 12 0C10.6076 0 9.27226 0.553123 8.28769 1.53769C7.30312 2.52226 6.75 3.85761 6.75 5.25V6H1.5V21C1.5 21.7956 1.81607 22.5587 2.37868 23.1213C2.94129 23.6839 3.70435 24 4.5 24H19.5C20.2956 24 21.0587 23.6839 21.6213 23.1213C22.1839 22.5587 22.5 21.7956 22.5 21V6H17.25Z" />
-                                    </svg>
-                                    <div class="text-size-small">Self Collection</div>
-                                </a>
+                                @foreach ($pickup_methods as $key => $pickup_method)
+                                    @if ($key == 0)
+                                        <a href="#" pickup-method-id="{{ $pickup_method->id }}" class="shipping-button shipping-button-active w-inline-block" id="deliveryShippingButton">
+                                            <svg width="33" height="33" viewBox="0 0 33 33" class="shipping-icon" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M26.125 9.625C26.125 8.1125 24.8875 6.875 23.375 6.875H19.25V9.625H23.375V13.2687L18.59 19.25H13.75V12.375H8.25C5.21125 12.375 2.75 14.8362 2.75 17.875V22H5.5C5.5 24.2825 7.3425 26.125 9.625 26.125C11.9075 26.125 13.75 24.2825 13.75 22H19.91L26.125 14.2313V9.625ZM9.625 23.375C8.86875 23.375 8.25 22.7563 8.25 22H11C11 22.7563 10.3812 23.375 9.625 23.375Z" />
+                                                <path d="M6.875 8.25H13.75V11H6.875V8.25ZM26.125 17.875C23.8425 17.875 22 19.7175 22 22C22 24.2825 23.8425 26.125 26.125 26.125C28.4075 26.125 30.25 24.2825 30.25 22C30.25 19.7175 28.4075 17.875 26.125 17.875ZM26.125 23.375C25.3687 23.375 24.75 22.7563 24.75 22C24.75 21.2437 25.3687 20.625 26.125 20.625C26.8813 20.625 27.5 21.2437 27.5 22C27.5 22.7563 26.8813 23.375 26.125 23.375Z" />
+                                            </svg>
+                                            <div class="text-size-small">{{ $pickup_method->name }}</div>
+                                        </a>
+                                    @else
+                                        <a href="#" pickup-method-id="{{ $pickup_method->id }}" class="shipping-button w-inline-block" id="deliveryShippingButton">
+                                            <svg width="33" height="33" viewBox="0 0 33 33" class="shipping-icon" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M26.125 9.625C26.125 8.1125 24.8875 6.875 23.375 6.875H19.25V9.625H23.375V13.2687L18.59 19.25H13.75V12.375H8.25C5.21125 12.375 2.75 14.8362 2.75 17.875V22H5.5C5.5 24.2825 7.3425 26.125 9.625 26.125C11.9075 26.125 13.75 24.2825 13.75 22H19.91L26.125 14.2313V9.625ZM9.625 23.375C8.86875 23.375 8.25 22.7563 8.25 22H11C11 22.7563 10.3812 23.375 9.625 23.375Z" />
+                                                <path d="M6.875 8.25H13.75V11H6.875V8.25ZM26.125 17.875C23.8425 17.875 22 19.7175 22 22C22 24.2825 23.8425 26.125 26.125 26.125C28.4075 26.125 30.25 24.2825 30.25 22C30.25 19.7175 28.4075 17.875 26.125 17.875ZM26.125 23.375C25.3687 23.375 24.75 22.7563 24.75 22C24.75 21.2437 25.3687 20.625 26.125 20.625C26.8813 20.625 27.5 21.2437 27.5 22C27.5 22.7563 26.8813 23.375 26.125 23.375Z" />
+                                            </svg>
+                                            <div class="text-size-small">{{ $pickup_method->name }}</div>
+                                        </a>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -62,8 +70,8 @@ Checkout - Big V
                         <h4 class="heading-6 margin-vertical margin-small">Select Delivery Address</h4>
                         <div class="delivery-add-item">
                             <div id="deliveryAddressData">
-                                <h4 class="heading-7">Neilson Soeratman</h4>
-                                <div class="text-size-small">082337363440</div>
+                                <h4 class="heading-7">Address name</h4>
+                                <div class="text-size-small">Phone number</div>
                                 <div class="text-size-small">
                                     [Block Number] [Street Name] <br>
                                     #[Unit Level]-[Unit Number] [Building Name] <br>
@@ -107,7 +115,7 @@ Checkout - Big V
                     <div class="position-relative w-100 h-auto">
                         <?php date_default_timezone_set('Asia/Singapore'); 
                         $minDate = date("Y-m-d", strtotime(date("Y-m-d")."+ 8 days")); ?>
-                        <input type="date" class="delivery-add-time w-100" id="shippingDate" min="<?= $minDate ?>">
+                        <input type="date" name="delivery_date" class="delivery-add-time w-100" id="shippingDate" min="<?= $minDate ?>">
                         <div class="position-absolute d-flex justify-content-between align-items-center" style="top:18px; left:18px; width: calc(100% - 36px); background: #f7f7f7; pointer-events:none;">
                             <div class="d-flex flex-column">
                                 <div class="text-size-small text-color-grey">Delivery Date</div>
@@ -119,12 +127,17 @@ Checkout - Big V
                         </div>
                     </div>
                     <div class="div-block-27">
-                        <a href="#" class="time-button time-button-active w-inline-block">
-                            <div>AM</div>
-                        </a>
-                        <a href="#" class="time-button w-inline-block">
-                            <div>PM</div>
-                        </a>
+                        @foreach ($pickup_times as $key => $pickup_time)
+                            @if ($key == 0)
+                                <a href="#" pickup-time-id="{{ $pickup_time->id }}" class="time-button time-button-active w-inline-block">
+                                    <div>{{ $pickup_time->time }}</div>
+                                </a>
+                            @else
+                                <a href="#" pickup-time-id="{{ $pickup_time->id }}" class="time-button w-inline-block">
+                                    <div>{{ $pickup_time->time }}</div>
+                                </a>
+                            @endif
+                        @endforeach
                     </div>
                 </div>
                 @foreach ($checkouts as $checkout)
@@ -155,7 +168,7 @@ Checkout - Big V
                 @endforeach
             </div>
             <div class="sticky-summary flex-shrink-0 flex-grow-0 w-50">
-                <form method="POST" action="" class="cart-summary">
+                <div class="cart-summary">
                     <h4 class="text-color-dark-grey">Discount</h4>
                     <div id="btnSelectDiscount" class="div-block-28" data-toggle="modal" data-target="">
                         <div class="dropdown-toggle w-dropdown-toggle">
@@ -187,16 +200,16 @@ Checkout - Big V
                     <div class="div-block-24 text-color-dark-grey">
                         <div class="inline text-weight-bold">Total</div>
                         <div class="inline text-weight-bold">$<span id="grandtotal-price">{{ $grandtotal_price }}</span></div>
-                    </div><a href="#" class="checkout-button oh-grow w-button">Place Order</a>
-                    <a href="#" class="payment-gateway-button w-inline-block">
+                    </div><button id="placeOrder" type="submit" class="checkout-button oh-grow w-button">Place Order</button>
+                    <button type="button" class="text-left payment-gateway-button w-inline-block">
                         <div class="text-weight-bold">HitPay Payment Gateway</div><img src="{{asset('assets/6312dbbdcf1b3f0de3362511_Hitpay.png')}}" loading="lazy" alt="" />
-                    </a>
-                    <a href="#" class="payment-gateway-button w-inline-block">
+                    </button>
+                    <button type="button" class="text-left payment-gateway-button w-inline-block">
                         <div><img src="{{asset('assets/6312f973553f41aa30ea54e6_atome%20(1).png')}}" loading="lazy" alt="" class="image-19" />
                             <div class="text-size-xtiny">Buy now pay later with Atome. The bill will be split into three easy payments.No hidden fees, 0% interest.*Only Singapore Dollar (SGD) is accepted.</div>
                         </div>
-                    </a>
-                    <a href="#" class="payment-gateway-button w-inline-block">
+                    </button>
+                    <button type="button" class="text-left payment-gateway-button w-inline-block">
                         <div>
                             <div class="text-weight-bold">PayNow</div>
                             <div class="text-size-xtiny">How to pay using paynow payment gateway :
@@ -204,10 +217,10 @@ Checkout - Big V
                                 <br />2. Pay to UEN number: 202031871R
                             </div>
                         </div>
-                    </a>
-                </form>
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
         <img src="{{asset('assets/6303b67a5064f05035c5a701_shape 1.svg')}}" loading="lazy" alt="" class="absolute shape-cart" />
     </div>
 </div>
@@ -413,6 +426,58 @@ Checkout - Big V
         getDetailAddress($("#shippingAddressData"), 1);
     });
     
+    $("#placeOrder").on("click", function() {
+        // Shipping Method
+        var shipping_method = $(".shipping-button.shipping-button-active");
+        if ($("input[name=pickup_method_id]").length <= 0 && shipping_method.length > 0) {
+            $("<input>").attr({
+                type: "hidden",
+                name: "pickup_method_id",
+                value: shipping_method.attr("pickup-method-id")
+            }).appendTo('#checkoutForm');
+        }
+        
+        // Time
+        var time = $(".time-button.time-button-active");
+        if ($("input[name=pickup_time_id]").length <= 0 && time.length > 0) {
+            $("<input>").attr({
+                type: "hidden",
+                name: "pickup_time_id",
+                value: time.attr("pickup-time-id")
+            }).appendTo('#checkoutForm');
+        }
+
+        var method_type = shipping_method.find("div").html();
+        if (method_type.includes("self")) {
+            if ($("input[name=self_collection_address_id]").length <= 0 && editAddress != "") {
+                $("<input>").attr({
+                    type: "hidden",
+                    name: "self_collection_address_id",
+                    value: $("#pickupShippingDetail").attr("selected-address")
+                }).appendTo('#checkoutForm');
+            } else {
+                alert("Please try again or refresh this page!");
+            }
+        } else {
+            if ($("input[name=billing_address_id]").length <= 0 && $("#deliveryAddressData").attr("selected-address") !== undefined) {
+                $("<input>").attr({
+                    type: "hidden",
+                    name: "billing_address_id",
+                    value: $("#deliveryAddressData").attr("selected-address")
+                }).appendTo('#checkoutForm');
+            }
+
+            if ($("input[name=shipping_address_id]").length <= 0 && $("#shippingAddressData").attr("selected-address") !== undefined) {
+                $("<input>").attr({
+                    type: "hidden",
+                    name: "shipping_address_id",
+                    value: $("#shippingAddressData").attr("selected-address")
+                }).appendTo('#checkoutForm');
+            }
+        }
+        e.preventDefault();
+    });
+    
     $("#btnEditDeliveryAddress").on("click", function() {
         // set editAddress to accessor (#deliveryAddressData) when edit delivery address
         editAddress = $("#deliveryAddressData");
@@ -492,16 +557,27 @@ Checkout - Big V
     });
 
     $("#deliveryShippingButton").on('click', function() {
+        // clear selected address from delivery address and pickup address
         $("#pickupShippingDetail, #deliveryAddressData, #shippingAddressData").removeAttr("selected-address");
+        
+        // load default delivery address
         getDetailAddress($("#deliveryAddressData"), 1, true);
+        
+        // load default different delivery address
         getDetailAddress($("#shippingAddressData"), 1);
 
+        // show delivery content
         $("#deliveryShippingDetail").removeClass("d-none");
+        
+        // hide shipping content
         $("#pickupShippingDetail").addClass("d-none");
     });
 
     $("#pickupShippingButton").on('click', function() {
+        // clear selected address from delivery address and pickup address
         $("#pickupShippingDetail, #deliveryAddressData, #shippingAddressData").removeAttr("selected-address");
+
+        // get all pickup address
         $.post(url + "/user/pickup-address/search", {
             _token: CSRF_TOKEN,
             keyword: "",
@@ -511,7 +587,10 @@ Checkout - Big V
             console.log("Error!")
         });
 
+        // hide delivery content
         $("#deliveryShippingDetail").addClass("d-none");
+        
+        // show shipping content
         $("#pickupShippingDetail").removeClass("d-none");
     });
 
@@ -578,10 +657,25 @@ Checkout - Big V
             $("#shippingAddress").slideDown();
             shippingAddress = true;
             $("#iconShippingAddress").attr("src", $("#iconShippingAddress").attr("src").replace("circle", "check"));
+
+            // set editAddress to accessor (#shippingAddressData)
+            editAddress = $("#shippingAddressData");
+            
+            // default selected-address on another shipping address
+            editAddress.attr("selected-address", 1);
         } else {
             $("#shippingAddress").slideUp();
             shippingAddress = false;
             $("#iconShippingAddress").attr("src", $("#iconShippingAddress").attr("src").replace("check", "circle"));
+
+            // set editAddress to accessor (#deliveryAddressData)
+            editAddress = $("#deliveryAddressData");
+            
+            // remove default selected-address on another shipping address
+            $("#shippingAddressData").removeAttr("selected-address");
+
+            // remove input hidden another shipping address
+            $("input[name=shipping_address_id]").remove();
         }
     });
 

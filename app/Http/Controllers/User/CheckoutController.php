@@ -4,9 +4,12 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\PickupMethod;
+use App\Models\PickupTime;
 use App\Models\UserAddress;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use Paynow\Payments\Paynow;
 
 class CheckoutController extends Controller
 {
@@ -35,7 +38,12 @@ class CheckoutController extends Controller
                     ->where('user_id', auth()->user()->id);
             })->orderBy('id', 'ASC')->get();
 
+            $pickup_methods = PickupMethod::all();
+            $pickup_times = PickupTime::all();
+
             return view('user.cart.checkout', [
+                'pickup_methods' => $pickup_methods,
+                'pickup_times' => $pickup_times,
                 'addresses' => $addresses,
                 'checkouts' => $checkout_items,
                 'total_price' => $total_price,
@@ -79,5 +87,33 @@ class CheckoutController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function placeOrder(Request $request)
+    {
+        // dd("a");
+        // dd($request->all());
+        // $request->validate([
+        //     'delivery_date' => 'required|string|date_format:Y-m-h',
+        //     'payment_method_id' => 'required|numeric',
+        //     'pickup_method_id' => 'required|numeric',
+        //     'pickup_time_id' => 'required|numeric',
+        //     'status_id' => 'required|numeric',
+        //     'billing_address_id' => 'required_without:self_collection_address_id|numeric',
+        //     'self_collection_address_id' => 'required_without:shipping_address_id|numeric',
+        //     'shipping_address_id' => 'sometimes|required|numeric',
+        // ]);
+        // dd("success");
+        $paynow = new Paynow(
+            'INTEGRATION_ID',
+            'INTEGRATION_KEY',
+            'http://example.com/gateways/paynow/update',
+
+            // The return url can be set at later stages. You might want to do this if you want to pass data to the return url (like the reference of the transaction)
+            'http://example.com/return?gateway=paynow'
+        );
+
+        dd($paynow);
+        // return;
     }
 }
