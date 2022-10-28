@@ -159,9 +159,11 @@ Product Name - Big V
                     </div>
                     <div class="upper-product-buttons">
                         @if ($product->variations[0]->name == "novariation")
-                            <a href="#" class="btn-add-cart atc-product-page oh-grow w-button">Add to Cart</a><a href="#" class="btn-buy-now button-secondary oh-grow w-button">Buy Now</a>
+                            <a href="#" class="btn-add-cart atc-product-page oh-grow w-button">Add to Cart</a>
+                            <a href="#" class="btn-buy-now button-secondary oh-grow w-button">Buy Now</a>
                         @else
-                            <a href="#" class="btn-add-cart btn-secondary atc-product-page oh-grow w-button">Add to Cart</a><a href="#" class="btn-buy-now btn-outline-secondary text-secondary button-secondary oh-grow w-button">Buy Now</a>
+                            <a href="#" class="btn-add-cart btn-secondary atc-product-page oh-grow w-button">Add to Cart</a>
+                            <a href="#" class="btn-buy-now btn-outline-secondary text-secondary button-secondary oh-grow w-button">Buy Now</a>
                         @endif
                     </div>
                 </div>
@@ -470,9 +472,21 @@ Product Name - Big V
                     });
                 }
             });
+            document.querySelector(".btn-buy-now").addEventListener("click", function(event) {
+                event.preventDefault();
+
+                $.post(url + "/user/cart/verify-checkout", {
+                    _token: CSRF_TOKEN,
+                    carts: {},
+                }).done(function(data) {
+                    alert(data);
+                }).fail(function(error) {
+                    console.log(error);
+                });
+            });
         @endif
     @else
-        $(".btn-add-cart").attr("href", "{{ route('login') }}");
+        $(".btn-add-cart, .btn-buy-now").attr("href", "{{ route('login') }}");
     @endif
 
     var shareLink = "<?= $shareLink ?>";

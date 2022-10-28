@@ -9,7 +9,7 @@ Product Name - Big V
 @endsection
 
 @section('content')
-<div class="content">
+<div class="content" style="width: 100vw; min-width: 0 !important; max-width: 1200px; margin:auto;">
     <div class="flex flex-vertical row-gap margin-large" style="width: 85%; min-width: 980px; position:relative;">
         <div class="text-align-center orange-text">Showing search result for</div>
         <h3 class="text-align-center">Search Result Name</h3>
@@ -23,8 +23,8 @@ Product Name - Big V
             
         </div>
     </div>
-    <div style="width: 85%; min-width: 980px;">
-        <div class="flex flex-center top-align relative archive-flex" style="width: 100%;">
+    <div>
+        <div class="flex flex-center top-align relative archive-flex" style="width: 100vw; min-width: 0 !important; max-width: 1200px; margin:auto;">
             <div class="filter card27 padding-small text-color-grey sticky-filter" style="padding: 2rem;">
                 <h4>Categories</h4>
                 <div class="w-form">
@@ -133,13 +133,15 @@ Product Name - Big V
             max = $("#max-price-2").val();
         }
         
-        $.post(url + ":8000/product/filter", {
+        $.post(url + "/product/filter", {
             _token: CSRF_TOKEN,
             categories: checkedFilter,
             min_price: min,
             max_price: max,
         }).done(function(data) {
             $("#productsList").html(data);
+        }).fail(function(error){
+            console.log(error);
         });
     });
 </script>

@@ -15,7 +15,7 @@ class DiscountController extends Controller
      */
     public function index()
     {
-        //
+        return view ("user.promo.index");
     }
 
     /**

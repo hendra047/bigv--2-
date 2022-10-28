@@ -131,6 +131,7 @@
 		} else if (hostname.includes('localhost')) {
 			url += ":8000";
 		}
+		// console.log(url);
 	</script>
 	@yield('javascript-extra')
 </body>

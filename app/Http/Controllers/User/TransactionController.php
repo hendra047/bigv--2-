@@ -15,11 +15,18 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::with(['carts' => function ($query) {
-            $query->with(['product_variation']);
-        }, 'transaction_discounts' => function ($query) {
-            $query->with(['discount']);
-        }, 'billing_address', 'shipping_address', 'payment_method', 'pickup_method', 'pickup_time'])->get();
+        // $transactions = Transaction::with(['carts' => function ($query) {
+        //     $query->with(['product_variation']);
+        // }, 'transaction_discounts' => function ($query) {
+        //     $query->with(['discount']);
+        // }, 'billing_address', 'shipping_address', 'payment_method', 'pickup_method', 'pickup_time'])->get();
+        $transactions = Transaction::with(['carts' => function($q1) {
+            $q1->select('carts.id')
+                ->join('product_variations', 'product_variations.id', '=', 'carts.product_variation_id')
+                ->join('products', 'products.id', '=', 'product_variations.products_id')
+                ->join('vendors', 'vendors.id', '=', 'products.vendors_id')
+                ->get();
+        }])->get();
 
         return view('user.transaction.history', ['transactions' => $transactions]);
     }
