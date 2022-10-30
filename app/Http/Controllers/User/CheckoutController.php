@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\PickupMethod;
 use App\Models\PickupTime;
 use App\Models\UserAddress;
+use App\Models\Transaction;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Paynow\Payments\Paynow;
@@ -20,6 +21,7 @@ class CheckoutController extends Controller
             $shipping_price = 30;
             $total_price = session()->get('total-checkout-price');
 
+            session()->put('shipping-price', $shipping_price);
             session()->put('total-checkout-price', $total_price + $shipping_price);
 
             $checkout_items = Vendor::with(['products' => function ($q1) {
@@ -91,29 +93,42 @@ class CheckoutController extends Controller
 
     public function placeOrder(Request $request)
     {
-        // dd("a");
-        // dd($request->all());
-        // $request->validate([
-        //     'delivery_date' => 'required|string|date_format:Y-m-h',
-        //     'payment_method_id' => 'required|numeric',
-        //     'pickup_method_id' => 'required|numeric',
-        //     'pickup_time_id' => 'required|numeric',
-        //     'status_id' => 'required|numeric',
-        //     'billing_address_id' => 'required_without:self_collection_address_id|numeric',
-        //     'self_collection_address_id' => 'required_without:shipping_address_id|numeric',
-        //     'shipping_address_id' => 'sometimes|required|numeric',
-        // ]);
-        // dd("success");
-        $paynow = new Paynow(
-            'INTEGRATION_ID',
-            'INTEGRATION_KEY',
-            'http://example.com/gateways/paynow/update',
+        $request->validate([
+            'delivery_date' => 'required|string|date_format:Y-m-h',
+            // 'payment_method_id' => 'required|numeric',
+            'pickup_method_id' => 'required|numeric',
+            'pickup_time_id' => 'required|numeric',
+            // 'status_id' => 'required|numeric',
+            'billing_address_id' => 'required_without:self_collection_address_id|numeric',
+            'self_collection_address_id' => 'required_without:billing_address_id|numeric',
+            'shipping_address_id' => 'sometimes|required|numeric',
+        ]);
 
-            // The return url can be set at later stages. You might want to do this if you want to pass data to the return url (like the reference of the transaction)
-            'http://example.com/return?gateway=paynow'
-        );
+        // $paynow = new Paynow(
+        //     'INTEGRATION_ID',
+        //     'INTEGRATION_KEY',
+        //     'http://example.com/gateways/paynow/update',
 
-        dd($paynow);
+        //     // The return url can be set at later stages. You might want to do this if you want to pass data to the return url (like the reference of the transaction)
+        //     'http://example.com/return?gateway=paynow'
+        // );
+        // dd($paynow);
+
+        $data = $request->all();
+        $data += [
+            'total_price' => session()->get('total-checkout-price'),
+            'shipping_fee' => session()->get('shipping-price'),
+            'user_id' => auth()->user()->id,
+            'status_id' => 1,
+            'payment_method_id' => 1,
+        ];
+        // dd($data);
+        $transaction = Transaction::create($data);
+
+        // update transaction id in cart
+        Cart::u (cart id harus ada)
+
+        return redirect()->route('home');
         // return;
     }
 }

@@ -15,11 +15,14 @@ class Transaction extends Model
         'product_discount_total',
         'shipping_discount_total',
         'delivery_date',
-        'billing_address_id', 
+        'billing_address_id',
         'shipping_address_id',
         'payment_method_id',
-        'pickup_method_id', 
-        'pickup_time_id'
+        'pickup_method_id',
+        'pickup_time_id',
+        'user_id',
+        'status_id',
+        'self_collection_address_id'
     ];
 
     public function carts()
