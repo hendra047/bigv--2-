@@ -22,7 +22,7 @@ Transaction - Big V
         </div>
         <div class="w-form">
           <form id="email-form-2" name="email-form-2" data-name="Email Form 2" method="get" class="form-2"><label
-              for="email" class="transaction-menus">Transactions</label><label for="email"[]
+              for="email" class="transaction-menus">Transactions</label><label for="email"
               class="transaction-menus">Profile Settings</label><label for="email"
               class="transaction-menus">Addresses</label><label for="email" class="transaction-menus">Promos</label>
           </form>
@@ -53,22 +53,41 @@ Transaction - Big V
               </div>
             </div>
           </div>
-          <div class="vendor-item">
-            <div class="flex gap-medium"><img
-                src="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                loading="lazy"
-                srcset="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                sizes="(max-width: 479px) 61vw, 70px" alt="" class="image-18" />
-              <div>
-                <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
-                <div class="text-size-small text-color-grey">Color: white</div>
-                <div class="text-size-small text-color-grey">$10</div>
-                
+          <div style="display: flex; flex-direction: column;">
+            <div class="vendor-item">
+              <div class="flex gap-medium"><img
+                  src="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
+                  loading="lazy"
+                  srcset="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
+                  sizes="(max-width: 479px) 61vw, 70px" alt="" class="image-18" />
+                <div>
+                  <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
+                  <div class="text-size-small text-color-grey">Color: white</div>
+                  <div class="text-size-small text-color-grey">$10</div>
+                </div>
+              </div>
+              <div class="div-block-36">
+                <div>14x</div>
+                <div>$140</div>
               </div>
             </div>
-            <div class="div-block-36">
-              <div>14x</div>
-              <div>$140</div>
+            <div class="flex" style="flex-direction: column; gap: 15px; margin-bottom: 18px;">
+              <div class="flex" style="justify-content:space-between; width: 100%;">
+                  <div class="text-size-small text-color-grey">Submit your Review</div>
+                  <div class="flex">
+                      @for ($j = 1; $j <= 5; $j++)
+                      <div class="c-product-rating__star star-review" style="cursor: pointer;" step="{{$j}}">
+                          <div class="icon">
+                              <div class="fas fa-star">
+                                <img src="{{asset('assets/Star 1.svg')}}" loading="lazy" alt="" />
+                              </div>
+                          </div>
+                      </div>
+                      @endfor
+                  </div>
+                  <input type="hidden" value="5">
+              </div>
+              <textarea style="width: 100%; border-radius: 10px; padding: 10px; resize: none; border: #c5c5c5 1px solid; font-size: 0.875rem;" rows="2"></textarea>
             </div>
           </div>
           <div class="div-line-sumarry"></div>
@@ -81,59 +100,51 @@ Transaction - Big V
               </div>
             </div>
           </div>
-          <div class="vendor-item">
-            <div class="flex gap-medium"><img
-                src="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                loading="lazy"
-                srcset="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                sizes="(max-width: 479px) 61vw, 70px" alt="" class="image-18" />
-              <div>
-                <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
-                <div class="text-size-small text-color-grey">Color: white</div>
-                <div class="text-size-small text-color-grey">$10</div>
-                
+          @for ($i = 0; $i < 4; $i++)
+          <div style="display: flex; flex-direction: column;">
+            <div class="vendor-item">
+              <div class="flex gap-medium"><img
+                  src="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
+                  loading="lazy"
+                  srcset="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
+                  sizes="(max-width: 479px) 61vw, 70px" alt="" class="image-18" />
+                <div>
+                  <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
+                  <div class="text-size-small text-color-grey">Color: white</div>
+                  <div class="text-size-small text-color-grey">$10</div>
+                </div>
+              </div>
+              <div class="div-block-36">
+                <div>14x</div>
+                <div>$140</div>
               </div>
             </div>
-            <div class="div-block-36">
-              <div>14x</div>
-              <div>$140</div>
+            <div class="flex" style="flex-direction: column; gap: 15px; margin-bottom: 18px;">
+              <div class="flex" style="justify-content:space-between; width: 100%;">
+                  <div class="text-size-small text-color-grey">Submit your Review</div>
+                  <div class="flex">
+                      @for ($j = 1; $j <= 5; $j++)
+                      <div class="c-product-rating__star star-review" style="cursor: pointer;" step="{{$j}}">
+                          <div class="icon">
+                              <div class="fas fa-star">
+                                <img src="{{asset('assets/Star 1.svg')}}" loading="lazy" alt="" />
+                              </div>
+                          </div>
+                      </div>
+                      @endfor
+                  </div>
+                  <input type="hidden" value="5">
+              </div>
+              <textarea style="width: 100%; border-radius: 10px; padding: 10px; resize: none; border: #c5c5c5 1px solid; font-size: 0.875rem;" rows="2"></textarea>
             </div>
           </div>
-          <div class="vendor-item">
-            <div class="flex gap-medium"><img
-                src="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                loading="lazy"
-                srcset="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                sizes="(max-width: 479px) 61vw, 70px" alt="" class="image-18" />
-              <div>
-                <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
-                <div class="text-size-small text-color-grey">Color: white</div>
-                <div class="text-size-small text-color-grey">$10</div>
-                
-              </div>
-            </div>
-            <div class="div-block-36">
-              <div>14x</div>
-              <div>$140</div>
-            </div>
-          </div>
-          <div class="vendor-item">
-            <div class="flex gap-medium"><img
-                src="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                loading="lazy"
-                srcset="{{asset('assets/6308e8ded34a4e6728a0f147_image%2031.jpg')}}"
-                sizes="(max-width: 479px) 61vw, 70px" alt="" class="image-18" />
-              <div>
-                <h5 class="text-color-dark-grey">Cute Tiger Aroma Stone Set</h5>
-                <div class="text-size-small text-color-grey">Color: white</div>
-                <div class="text-size-small text-color-grey">$10</div>
-                
-              </div>
-            </div>
-            <div class="div-block-36">
-              <div>14x</div>
-              <div>$140</div>
-            </div>
+          @endfor
+          <!-- <input type='file' id="imgInp" />
+          <img id="blah" src="#" alt="your image" /> -->
+          <div class="flex" style="justify-content: flex-end;">
+            <button class="button-3 button-size--small w-inline-block">
+                <div class="text-color-white">Submit Review</div>
+            </button>
           </div>
         </div>
         <div class="vendors-card">
@@ -237,4 +248,32 @@ Transaction - Big V
 
 @section('javascript-extra')
 <script src="{{asset('assets/js/script-transaction.js')}}" type="text/javascript"></script>
+<script>
+
+//   function readURL(input) {
+//     if (input.files && input.files[0]) {
+//         var reader = new FileReader();
+
+//         reader.onload = function (e) {
+//             $('#blah').attr('src', e.target.result);
+//         }
+
+//         reader.readAsDataURL(input.files[0]);
+//     }
+// }
+
+// $("#imgInp").change(function(){
+//     readURL(this);
+// });
+
+$(".star-review").on('click', function(){
+  var rate = $(this).attr('step');
+  var count = 0;
+  $(this).parent().children().each(function(){
+    count++;
+    $(this).children().children().children().attr('src', ((count > rate) ? "{{asset('assets/Star 3.svg')}}" : "{{asset('assets/Star 1.svg')}}"));
+  });
+  $(this).parent().parent().children('input').val(rate);
+});
+</script>
 @endsection
