@@ -163,9 +163,7 @@ Cart - Big V
                 quantity: quantity,
             }).done(function(data) {
                 if (quantity <= 0) {
-                    if (confirm('Are you sure you want to delete this item?')) {
-                        parent.remove();
-                    }
+                    parent.remove();
                 }
 
                 if (data.vendor_id in cartItems) {

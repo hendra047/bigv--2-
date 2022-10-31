@@ -122,13 +122,15 @@ class CheckoutController extends Controller
             'status_id' => 1,
             'payment_method_id' => 1,
         ];
-        // dd($data);
+
         $transaction = Transaction::create($data);
 
         // update transaction id in cart
-        Cart::u (cart id harus ada)
+        $checkout_items = session()->get('checkout-items');
+        foreach ($checkout_items as $item) {
+            Cart::where('id', $item)->update(['transaction_id' => $transaction->id]);
+        }
 
         return redirect()->route('home');
-        // return;
     }
 }
