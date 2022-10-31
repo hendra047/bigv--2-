@@ -99,7 +99,7 @@ Transaction - Big V
                     sizes="(max-width: 479px) 61vw, 70px" alt="" class="image-18" />
                   <div>
                     <h5 class="text-color-dark-grey">{{ $cart->product_name }}</h5>
-                    <div class="text-size-small text-color-grey">Color: white</div>
+                    <div class="text-size-small text-color-grey">Variant: {{ $cart->product_variation_name }}</div>
                     <div class="text-size-small text-color-grey">${{ $cart->product_price }}</div>
                     <!-- <div class="text-size-small text-color-grey">+ 4 more products</div> -->
                   </div>

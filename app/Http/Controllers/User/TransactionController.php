@@ -103,6 +103,7 @@ class TransactionController extends Controller
                     'vendor_id',
                     'vendors.name as vendor_name',
                     'products.name as product_name',
+                    'product_variations.name as product_variation_name',
                     'carts.price as product_price',
                 )
                     ->join('product_variations', 'product_variations.id', '=', 'product_variation_id')
